@@ -1,16 +1,89 @@
-# academic_planner_for_it
+# Academic Planner for IT
 
-A new Flutter project.
+This Flutter-based application helps IT students efficiently manage their academic schedules, deadlines, and events. It supports Excel import for bulk event creation and integrates with an OCR system for extracting event details from images.
 
-## Getting Started
+## Key Features
+- **Event Management**: Create, update, and delete academic events with ease.
+- **Excel Import**: Bulk import events from Excel files for efficient data entry.
+- **OCR Integration**: Extract event details from images using Google ML Kit’s text recognition.
+- **Reminders**: Local notifications for upcoming deadlines.
+- **Database Storage**: Persist data using an SQLite database.
 
-This project is a starting point for a Flutter application.
+## Installation
 
-A few resources to get you started if this is your first Flutter project:
+### Prerequisites
+- [Flutter SDK](https://flutter.dev/docs/get-started/install)
+- Android Studio or Visual Studio Code with Flutter plugins
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Sharma-Shivam2021/academic_planner_for_it.git
+   ```
+2. Navigate into project directory
+   ```bash
+   cd acaademic_planner_for_it
+   ```
+3. Fetch the dependencies
+   ```bash
+   flutter pub get
+   ```
+4. Run the app
+   ```bash
+   flutter run
+   ```
+## State Management
+This app uses Riverpod for efficient state management. Both classic and generator methods are used for handling state across the app.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Database
+The app uses SQLite to store events locally. Imported Excel events are stored separately to ensure regular and imported events are easy to manage.
+
+## OCR Integeration
+Powered by the google_mlkit_text_recognition package, the app extracts text from images (e.g., event schedules, lecture notes) to create event reminders.
+
+## Packages Used
+### flutter_riverpod:
+State management solution.
+### google_mlkit_text_recognition: 
+OCR for text recognition.
+### sqflite: 
+SQLite database integration.
+### intl:
+Date formatting and localization support.
+### flutter_local_notifications:
+Notification scheduling.
+
+## Project Structure
+```
+lib\/
+├── features/
+│   ├── splash_screen/
+│   │   └── view
+│   ├── home_screen/
+│   │   ├── models
+│   │   ├── view_models
+│   │   ├── view
+│   │   └── widgets
+│   ├── import_excel/
+│   │   ├── models
+│   │   ├── view_models
+│   │   ├── view
+│   │   └── widgets
+│   └── ocr_screen/
+│       ├── models
+│       ├── view_models
+│       ├── view
+│       └── widgets   
+├── utilities/
+│   ├── common_widgets
+│   ├── constants
+│   ├── routes
+│   ├── seervices
+│   └── theme
+└── main.dart 
+```
+
+## Current Major Issues
+1. App not responsive for different screen sizes
+2. No Quality of Life features like ```progress indicator```, ```error and exception handling```
+3. OCR results with pipe characters (|) may need manual correction.
