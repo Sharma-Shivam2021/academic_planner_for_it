@@ -52,3 +52,38 @@ SQLite database integration.
 Date formatting and localization support.
 ### flutter_local_notifications:
 Notification scheduling.
+
+## Project Structure
+```
+lib\/
+├── features/
+│   ├── splash_screen/
+│   │   └── view
+│   ├── home_screen/
+│   │   ├── models
+│   │   ├── view_models
+│   │   ├── view
+│   │   └── widgets
+│   ├── import_excel/
+│   │   ├── models
+│   │   ├── view_models
+│   │   ├── view
+│   │   └── widgets
+│   └── ocr_screen/
+│       ├── models
+│       ├── view_models
+│       ├── view
+│       └── widgets   
+├── utilities/
+│   ├── common_widgets
+│   ├── constants
+│   ├── routes
+│   ├── seervices
+│   └── theme
+└── main.dart 
+```
+
+## Current Major Issues
+1. App not responsive for different screen sizes
+2. No Quality of Life features like ```progress indicator```, ```error and exception handling```
+3. OCR results with pipe characters (|) may need manual correction.
