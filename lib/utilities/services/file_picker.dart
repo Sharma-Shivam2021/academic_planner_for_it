@@ -8,8 +8,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../constants/constants.dart';
-
 class FilePickerServices {
   void pickFile(WidgetRef ref) async {
     try {
@@ -37,7 +35,7 @@ class FilePickerServices {
       Excel excel, WidgetRef ref) async {
     try {
       final kConfigTimeForSubtract =
-          ref.read(settingsProvider).configTimeForSubtract;
+          ref.watch(settingsProvider).configTimeForSubtract;
       List<ExcelData> tempExcelDataList = [];
       for (var table in excel.tables.keys) {
         final sheet = excel.tables[table];
@@ -45,7 +43,7 @@ class FilePickerServices {
 
         int? noOfRows = sheet.maxRows;
 
-        for (int rowIndex = 1; rowIndex < noOfRows; rowIndex++) {
+        for (int rowIndex = 0; rowIndex < noOfRows; rowIndex++) {
           final row = sheet.row(rowIndex);
 
           final eventName = row[0]?.value?.toString();
@@ -71,9 +69,14 @@ class FilePickerServices {
               tempExcelDataList
                   .add(ExcelData(eventName: eventName, dateTime: date));
             } else {
-              firstDateTime = firstDateTime.copyWith(hour: 10);
-              tempExcelDataList.add(
-                  ExcelData(eventName: eventName, dateTime: firstDateTime));
+              var date = firstDateTime
+                  .subtract(kConfigTimeForSubtract)
+                  .copyWith(hour: 10);
+              if (date.weekday == DateTime.sunday) {
+                date = date.subtract(kConfigTimeForSubtract);
+              }
+              tempExcelDataList
+                  .add(ExcelData(eventName: eventName, dateTime: date));
             }
 
             if (endDateTimeString != null &&
@@ -94,9 +97,15 @@ class FilePickerServices {
                 tempExcelDataList
                     .add(ExcelData(eventName: eventName, dateTime: date));
               } else {
+                var date = secondDateTime
+                    .subtract(kConfigTimeForSubtract)
+                    .copyWith(hour: 10);
+                if (date.weekday == DateTime.sunday) {
+                  date = date.subtract(kConfigTimeForSubtract);
+                }
                 secondDateTime = secondDateTime.copyWith(hour: 10);
-                tempExcelDataList.add(
-                    ExcelData(eventName: eventName, dateTime: secondDateTime));
+                tempExcelDataList
+                    .add(ExcelData(eventName: eventName, dateTime: date));
               }
             }
           }

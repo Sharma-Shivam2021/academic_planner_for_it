@@ -87,3 +87,4 @@ lib\/
 1. App not responsive for different screen sizes
 2. No Quality of Life features like ```progress indicator```, ```error and exception handling```
 3. OCR results with pipe characters (|) may need manual correction.
+4. Add Pagination on all the listing screen

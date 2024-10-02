@@ -17,10 +17,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeNotificationsAndTtsAndDB();
+    _initializeNotificationsAndTtsAndDBAndSharedPreference();
   }
 
-  Future<void> _initializeNotificationsAndTtsAndDB() async {
+  Future<void> _initializeNotificationsAndTtsAndDBAndSharedPreference() async {
     try {
       await NotificationServices().initialize();
       await TTSService().initializeTTS();
@@ -32,7 +32,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       debugPrint('$e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

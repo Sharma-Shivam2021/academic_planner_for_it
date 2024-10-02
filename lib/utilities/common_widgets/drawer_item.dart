@@ -29,7 +29,10 @@ class DrawerItem extends StatelessWidget {
             : Navigator.of(context)
                 .pushNamedAndRemoveUntil(routeName, (route) => false);
       },
-      style: ElevatedButton.styleFrom(minimumSize: Size(width, 50)),
+      style: ElevatedButton.styleFrom(
+        minimumSize: Size(width, 50),
+        alignment: AlignmentDirectional.centerStart,
+      ),
     );
   }
 }

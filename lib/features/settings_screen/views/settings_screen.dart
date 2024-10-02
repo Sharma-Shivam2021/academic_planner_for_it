@@ -28,7 +28,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               value: settings.configTimeForSubtract.inHours.toDouble(),
               min: 1,
               max: 72,
-              divisions: 71,
+              divisions: 3,
               label: settings.configTimeForSubtract.inHours.toString(),
               onChanged: (value) {
                 settingsNotifier.updateConfigTimeForSubtract(

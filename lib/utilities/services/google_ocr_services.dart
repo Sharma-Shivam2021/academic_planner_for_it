@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:academic_planner_for_it/features/ocr_screen/model/ocr_model.dart';
 import 'package:academic_planner_for_it/features/ocr_screen/view_model/ocr_list_notifier.dart';
 import 'package:academic_planner_for_it/features/settings_screen/view_model/setting_notifier.dart';
-import 'package:academic_planner_for_it/utilities/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -14,12 +13,12 @@ class GoogleOCRServices {
     String? eventName;
     String? startDateString;
     String? endDateString;
-    final kConfigTimeForSubtract =
-        ref.read(settingsProvider).configTimeForSubtract;
-
+    final TextRecognizer textRecognizer = TextRecognizer();
     try {
+      final kConfigTimeForSubtract =
+          ref.watch(settingsProvider).configTimeForSubtract;
       final inputImage = InputImage.fromFile(imageFile!);
-      final TextRecognizer textRecognizer = TextRecognizer();
+
       RecognizedText recognizedText =
           await textRecognizer.processImage(inputImage);
 
@@ -44,18 +43,19 @@ class GoogleOCRServices {
 
         // Parse the dates in DD-MM-YYYY format
         var startDate = parseDate(startDateString);
+        var endDate = parseDate(endDateString);
+
         if (startDate != null) {
-          startDate = startDate.subtract(kConfigTimeForSubtract);
-          final newOcrData = createOcrData(eventName, startDate);
+          final newOcrData =
+              createOcrData(eventName, startDate, kConfigTimeForSubtract);
           extractedEvents.add(newOcrData);
         } else {
           debugPrint("Error: Invalid Start Date");
         }
 
-        var endDate = parseDate(endDateString);
         if (endDate != null && endDate.isAfter(startDate!)) {
-          endDate = endDate.subtract(kConfigTimeForSubtract);
-          final newOcrData = createOcrData(eventName, endDate);
+          final newOcrData =
+              createOcrData(eventName, endDate, kConfigTimeForSubtract);
           extractedEvents.add(newOcrData);
         } else {
           debugPrint("Error: Invalid End Date or End Date equals Start Date");
@@ -74,8 +74,13 @@ class GoogleOCRServices {
     }
   }
 
-  OCRData createOcrData(String eventName, DateTime dateTime) {
-    return OCRData(eventName: eventName, dateTime: dateTime);
+  OCRData createOcrData(
+      String eventName, DateTime dateTime, Duration subtractDuration) {
+    var finalDate = dateTime.subtract(subtractDuration).copyWith(hour: 10);
+    if (finalDate.weekday == DateTime.sunday) {
+      finalDate = finalDate.subtract(subtractDuration).copyWith(hour: 10);
+    }
+    return OCRData(eventName: eventName, dateTime: finalDate);
   }
 
   // Function to parse DD-MM-YYYY date format

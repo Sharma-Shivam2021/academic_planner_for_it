@@ -30,6 +30,26 @@ class AppTheme {
       color: lightScheme.secondaryContainer,
     ),
   );
+
+  static final darkMode = ThemeData.dark().copyWith(
+    colorScheme: darkScheme,
+    scaffoldBackgroundColor: darkScheme.primaryContainer,
+    appBarTheme: _appBarTheme(
+      darkScheme.onPrimary,
+      darkScheme.onPrimaryContainer,
+      darkScheme.secondary,
+      darkScheme.onTertiaryContainer,
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: darkScheme.onPrimaryFixed,
+    ),
+    inputDecorationTheme: _inputDecorationTheme(),
+    bottomSheetTheme: _bottomSheetTheme(darkScheme.secondaryContainer),
+    elevatedButtonTheme: _elevatedButtonThemeData(darkScheme.primaryContainer),
+    cardTheme: CardTheme(
+      color: darkScheme.secondaryContainer,
+    ),
+  );
 }
 
 _appBarTheme(

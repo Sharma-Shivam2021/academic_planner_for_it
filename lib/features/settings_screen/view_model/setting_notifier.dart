@@ -27,13 +27,6 @@ class SettingNotifier extends StateNotifier<Settings> {
     );
   }
 
-  Future<void> updateNotificationSound(String sound) async {
-    state = Settings(
-      configTimeForSubtract: state.configTimeForSubtract,
-    );
-    await _saveSettings();
-  }
-
   Future<void> updateConfigTimeForSubtract(Duration duration) async {
     state = Settings(
       configTimeForSubtract: duration,
