@@ -33,7 +33,7 @@ class OcrRepository {
           ],
         );
         if (existingEvents.isNotEmpty) {
-          return;
+          continue;
         }
         int generatedId = await db.insert(
           kEventsTable,

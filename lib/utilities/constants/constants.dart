@@ -3,7 +3,6 @@ DateTime kLastDate = DateTime(2400);
 DateTime kInitialDate = DateTime.now();
 
 String kEventsTable = 'events';
-String kNotificationSound = 'new_event_female';
 
 class EventNotificationState {
   static const created = 0;
@@ -17,4 +16,4 @@ class DataSource {
   static const ocr = 2;
 }
 
-Duration kConfigTimeForSubtract = const Duration(hours: 24);
+String kNotificationSound = 'new_event_female';

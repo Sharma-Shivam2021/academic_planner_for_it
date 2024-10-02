@@ -1,5 +1,5 @@
 import 'package:academic_planner_for_it/features/ocr_screen/model/ocr_model.dart';
-import 'package:academic_planner_for_it/features/ocr_screen/view/edit_ocr_data.dart';
+import 'package:academic_planner_for_it/features/ocr_screen/views/edit_ocr_data.dart';
 import 'package:academic_planner_for_it/features/ocr_screen/view_model/ocr_list_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

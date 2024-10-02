@@ -1,4 +1,5 @@
 // Project Package
+import 'package:academic_planner_for_it/features/settings_screen/view_model/setting_notifier.dart';
 import 'package:academic_planner_for_it/utilities/constants/constants.dart';
 import 'package:academic_planner_for_it/utilities/services/notification_services.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +28,13 @@ class EventRepository {
     try {
       final db = await _db;
       final List<Map<String, dynamic>> eventMap = await db.query(kEventsTable);
-
-      return List.generate(
+      final events = List.generate(
         eventMap.length,
         (i) {
           return Events.fromMap(eventMap[i]);
         },
       );
+      return events;
     } catch (e) {
       throw Exception('$e');
     }
@@ -56,6 +57,8 @@ class EventRepository {
 
   void _scheduleNotification(Events event) async {
     try {
+      await notificationServices.removeNotification(event.id);
+
       if (event.dateTime.isAfter(DateTime.now())) {
         await notificationServices.scheduleNotification(
           event.id,
@@ -116,10 +119,12 @@ class EventRepository {
   Future<void> clearDatabase() async {
     try {
       final db = await _db;
-      await notificationServices.cancelAllNotifications();
-      await db.delete(kEventsTable);
+      await db.transaction((txn) async {
+        await notificationServices.cancelAllNotifications();
+        await txn.delete(kEventsTable);
+      });
     } catch (e) {
-      debugPrint('$e');
+      debugPrint('Error clearing database: $e');
     }
   }
 }

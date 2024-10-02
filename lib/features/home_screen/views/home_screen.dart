@@ -2,6 +2,7 @@
 import 'package:academic_planner_for_it/features/home_screen/view_models/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 //Project Classes
 import '../models/events.dart';
@@ -19,6 +20,10 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  static const _pageSize = 10;
+  final PagingController<int, Events> _pagingController =
+      PagingController(firstPageKey: 0);
+
   void _deleteEvent(Events deletingEvent) async {
     try {
       await ref.read(deleteEventProvider(deletingEvent).future);
@@ -90,6 +95,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
+    // _pagingController.addPageRequestListener((pageKey){
+    //   _fetchPage(pageKey);
+    // });
     _updateNotificationState();
     super.initState();
   }
@@ -97,6 +105,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _updateNotificationState() async {
     await ref.read(eventRepositoryProvider).updateEventNotificationState();
     ref.invalidate(readAllEventProvider);
+  }
+
+  // Future<void> _fetchPage(int pageKey)async{
+  //   try {
+  //     final eventPage=await ref.read(eventRepositoryProvider).
+  //   } catch (e) {
+  //     debugPrint('$e');
+  //   }
+  // }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override

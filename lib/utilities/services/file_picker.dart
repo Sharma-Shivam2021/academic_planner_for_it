@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:academic_planner_for_it/features/import_excel/model/excel_data.dart';
 import 'package:academic_planner_for_it/features/import_excel/view_model/excel_list_notifier.dart';
+import 'package:academic_planner_for_it/features/settings_screen/view_model/setting_notifier.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,8 @@ class FilePickerServices {
   Future<void> _creatingExcelModelAndStoringInDB(
       Excel excel, WidgetRef ref) async {
     try {
+      final kConfigTimeForSubtract =
+          ref.read(settingsProvider).configTimeForSubtract;
       List<ExcelData> tempExcelDataList = [];
       for (var table in excel.tables.keys) {
         final sheet = excel.tables[table];

@@ -6,22 +6,30 @@ class DrawerItem extends StatelessWidget {
     required this.routeName,
     required this.buttonName,
     this.removeUntilNavigation = false,
+    required this.buttonIcon,
   });
 
   final String routeName;
   final String buttonName;
   final bool removeUntilNavigation;
+  final IconData buttonIcon;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      child: Text(buttonName),
+    final width = MediaQuery.sizeOf(context).width;
+    return ElevatedButton.icon(
+      icon: Icon(buttonIcon),
+      label: Text(
+        buttonName,
+        overflow: TextOverflow.ellipsis,
+      ),
       onPressed: () {
         !removeUntilNavigation
             ? Navigator.of(context).pushNamed(routeName)
             : Navigator.of(context)
                 .pushNamedAndRemoveUntil(routeName, (route) => false);
       },
+      style: ElevatedButton.styleFrom(minimumSize: Size(width, 50)),
     );
   }
 }
