@@ -2,7 +2,6 @@ import 'package:academic_planner_for_it/features/import_excel/model/excel_data.d
 import 'package:academic_planner_for_it/utilities/constants/constants.dart';
 import 'package:academic_planner_for_it/utilities/services/database.dart';
 import 'package:academic_planner_for_it/utilities/services/notification_services.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -24,15 +23,10 @@ class ExcelRepository {
     try {
       final db = await _db;
       for (var data in excelData) {
-        final existingEvents = await db.query(
-          kEventsTable,
-          where: 'eventName = ? and dateTime = ?',
-          whereArgs: [
-            data.eventName,
-            data.dateTime.toIso8601String(),
-          ],
-        );
-        if (existingEvents.isNotEmpty) {
+        final existingEvents = await AppDatabase.instance
+            .eventExists(data.eventName, data.dateTime);
+
+        if (existingEvents) {
           continue;
         }
         int generatedId = await db.insert(
@@ -44,7 +38,7 @@ class ExcelRepository {
         _scheduleNotification(data);
       }
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('Error saving Excel data: $e');
     }
   }
 
@@ -60,7 +54,7 @@ class ExcelRepository {
         );
       }
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 }

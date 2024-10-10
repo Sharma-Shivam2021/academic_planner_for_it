@@ -10,7 +10,6 @@ import '../../../utilities/common_widgets/custom_selector_fields.dart';
 import '../../../utilities/constants/constants.dart';
 import '../../../utilities/services/speech_manager.dart';
 import '../../../utilities/constants/date_formatter.dart';
-import '../../../utilities/theme/themes.dart';
 
 class AddNewEvent extends ConsumerStatefulWidget {
   const AddNewEvent({super.key});
@@ -99,7 +98,7 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
         }
       });
     } catch (e) {
-      debugPrint(' Add Event :$e');
+      throw Exception(' Add Event :$e');
     }
   }
 

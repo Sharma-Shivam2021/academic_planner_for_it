@@ -21,7 +21,7 @@ class FilePickerServices {
       await file.delete();
       FilePickerStatus.done;
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 
@@ -116,7 +116,7 @@ class FilePickerServices {
         ref.read(excelListNotifierProvider.notifier).addExcelData(excelData);
       }
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 }

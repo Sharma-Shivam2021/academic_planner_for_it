@@ -22,7 +22,7 @@ class OcrList extends ConsumerWidget {
         ),
         subtitle: Text(dateFormatter(data.dateTime)),
         trailing: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.25,
+          width: MediaQuery.of(context).size.width * 0.3,
           child: Row(
             children: [
               IconButton(

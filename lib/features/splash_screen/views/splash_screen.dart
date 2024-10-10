@@ -29,7 +29,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
       }
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 

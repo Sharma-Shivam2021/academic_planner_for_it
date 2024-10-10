@@ -7,12 +7,33 @@ import 'package:flutter/material.dart';
 
 import '../../../utilities/theme/themes.dart';
 
-class OcrUtilityButton extends ConsumerWidget {
+class OcrUtilityButton extends ConsumerStatefulWidget {
   const OcrUtilityButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState createState() => _OcrUtilityButtonState();
+}
+
+class _OcrUtilityButtonState extends ConsumerState<OcrUtilityButton> {
+  void onDelete() async {
+    ref.read(ocrListProvider.notifier).clearList();
+  }
+
+  void onAdd() async {
     final ocrData = ref.watch(ocrListProvider);
+    ref.read(saveOcrToDatabaseProvider(ocrData).future).then((_) {
+      ref.invalidate(readAllEventProvider);
+      ref.read(ocrListProvider.notifier).clearList();
+      pop();
+    });
+  }
+
+  void pop() {
+    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.1,
@@ -26,9 +47,7 @@ class OcrUtilityButton extends ConsumerWidget {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
-                  ref.read(ocrListProvider.notifier).clearList();
-                },
+                onPressed: onDelete,
                 child: const Text(
                   'Delete',
                   style: TextStyle(
@@ -40,16 +59,7 @@ class OcrUtilityButton extends ConsumerWidget {
             const SizedBox(width: 15),
             Expanded(
               child: ElevatedButton(
-                onPressed: () async {
-                  ref.read(saveOcrToDatabaseProvider(ocrData).future).then((_) {
-                    ref.invalidate(readAllEventProvider);
-                    ref.read(ocrListProvider.notifier).clearList();
-                    Navigator.pushReplacementNamed(
-                      context,
-                      HomeScreen.routeName,
-                    );
-                  });
-                },
+                onPressed: onAdd,
                 child: const Text(
                   'Add',
                   style: TextStyle(

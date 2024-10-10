@@ -1,8 +1,6 @@
 // Project Package
-import 'package:academic_planner_for_it/features/settings_screen/view_model/setting_notifier.dart';
 import 'package:academic_planner_for_it/utilities/constants/constants.dart';
 import 'package:academic_planner_for_it/utilities/services/notification_services.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
@@ -43,6 +41,18 @@ class EventRepository {
   Future<void> addEvent(Events event) async {
     try {
       final db = await _db;
+      final existingEvents = await db.query(
+        kEventsTable,
+        where: 'eventName = ? AND dateTime = ?',
+        whereArgs: [
+          event.eventName,
+          event.dateTime.toIso8601String(),
+        ],
+      );
+      if (existingEvents.isNotEmpty) {
+        return;
+      }
+
       int generatedId = await db.insert(
         kEventsTable,
         event.toMap(),
@@ -51,7 +61,7 @@ class EventRepository {
       event = event.copyWith(id: generatedId);
       _scheduleNotification(event);
     } catch (e) {
-      debugPrint('Error in adding event: $e');
+      throw Exception('Error in adding event: $e');
     }
   }
 
@@ -69,7 +79,7 @@ class EventRepository {
         );
       }
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 
@@ -98,7 +108,7 @@ class EventRepository {
         }
       }
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 
@@ -112,7 +122,7 @@ class EventRepository {
         whereArgs: [deletingEvent.id],
       );
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 
@@ -124,7 +134,7 @@ class EventRepository {
         await txn.delete(kEventsTable);
       });
     } catch (e) {
-      debugPrint('Error clearing database: $e');
+      throw Exception('Error clearing database: $e');
     }
   }
 }

@@ -5,14 +5,12 @@ class OCRData {
   String eventName;
   DateTime dateTime;
   int eventNotificationState;
-  int source;
 
   OCRData({
     this.id = -1,
     required this.eventName,
     required this.dateTime,
     this.eventNotificationState = EventNotificationState.created,
-    this.source = DataSource.ocr,
   });
 
   @override
@@ -23,20 +21,18 @@ class OCRData {
           id == other.id &&
           eventName == other.eventName &&
           dateTime == other.dateTime &&
-          eventNotificationState == other.eventNotificationState &&
-          source == other.source;
+          eventNotificationState == other.eventNotificationState;
 
   @override
   int get hashCode =>
       id.hashCode ^
       eventName.hashCode ^
       dateTime.hashCode ^
-      eventNotificationState.hashCode ^
-      source.hashCode;
+      eventNotificationState.hashCode;
 
   @override
   String toString() {
-    return 'OCRData{id: $id, eventName: $eventName, dateTime: $dateTime, eventNotificationState: $eventNotificationState, source: $source}';
+    return 'OCRData{id: $id, eventName: $eventName, dateTime: $dateTime, eventNotificationState: $eventNotificationState}';
   }
 
   Map<String, dynamic> toMap() {
@@ -44,7 +40,6 @@ class OCRData {
       'eventName': eventName,
       'dateTime': dateTime.toIso8601String(),
       'eventNotificationState': eventNotificationState,
-      'source': source,
     };
   }
 
@@ -54,7 +49,6 @@ class OCRData {
       eventName: map['eventName'] as String,
       dateTime: DateTime.parse(map['dateTime'] as String),
       eventNotificationState: map['eventNotificationState'] as int,
-      source: map['source'] as int,
     );
   }
 
@@ -71,7 +65,6 @@ class OCRData {
       dateTime: dateTime ?? this.dateTime,
       eventNotificationState:
           eventNotificationState ?? this.eventNotificationState,
-      source: source ?? this.source,
     );
   }
 }

@@ -3,8 +3,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-import '../constants/constants.dart';
-
 final TTSService ttsService = TTSService();
 
 class NotificationServices {
@@ -41,7 +39,7 @@ class NotificationServices {
         final bool? granted =
             await androidPlugin.requestNotificationsPermission();
         if (!granted!) {
-          print('Android notification permission not granted');
+          throw Exception('Android notification permission not granted');
         }
       }
     }
@@ -66,11 +64,11 @@ class NotificationServices {
             UILocalNotificationDateInterpretation.absoluteTime,
       );
     } catch (e) {
-      print('$e');
+      throw Exception('$e');
     }
   }
 
-  final NotificationDetails _notificationDetails = NotificationDetails(
+  final NotificationDetails _notificationDetails = const NotificationDetails(
     android: AndroidNotificationDetails(
       'event_channel',
       'Event Notifications',
@@ -78,7 +76,7 @@ class NotificationServices {
       importance: Importance.max,
       enableVibration: true,
       playSound: true,
-      sound: RawResourceAndroidNotificationSound(kNotificationSound),
+      sound: RawResourceAndroidNotificationSound('new_event_female'),
     ),
   );
 
@@ -92,7 +90,7 @@ class NotificationServices {
     try {
       await flutterLocalNotificationsPlugin.cancel(id);
     } catch (e) {
-      print('$e');
+      throw Exception('$e');
     }
   }
 

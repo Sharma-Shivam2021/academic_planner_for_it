@@ -1,6 +1,4 @@
-import 'package:academic_planner_for_it/features/import_excel/model/excel_data.dart';
 import 'package:academic_planner_for_it/features/import_excel/view_model/excel_list_notifier.dart';
-import 'package:academic_planner_for_it/features/import_excel/view_model/excel_provider.dart';
 import 'package:academic_planner_for_it/features/import_excel/widgets/example_table_structure.dart';
 import 'package:academic_planner_for_it/utilities/common_widgets/custom_drawer.dart';
 import 'package:academic_planner_for_it/utilities/services/file_picker.dart';
@@ -28,7 +26,6 @@ class _ImportExcelScreenState extends ConsumerState<ImportExcelScreen> {
   @override
   Widget build(BuildContext context) {
     final excelData = ref.watch(excelListNotifierProvider);
-    debugPrint(excelData.length.toString());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Import Excel'),

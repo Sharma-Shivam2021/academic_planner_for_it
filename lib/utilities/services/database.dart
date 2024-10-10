@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -40,7 +39,7 @@ class AppDatabase {
     try {
       await _createEventsTable(db);
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 
@@ -55,12 +54,28 @@ class AppDatabase {
       id $idType,
       eventName $textType,
       dateTime $textType,
-      eventNotificationState $intType,
-      source $intType
+      eventNotificationState $intType
     )
   ''');
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
+    }
+  }
+
+  Future<bool> eventExists(String eventName, DateTime dateTime) async {
+    try {
+      final db = await database();
+      final result = await db.query(
+        'events',
+        where: 'eventName = ? AND dateTime = ?',
+        whereArgs: [
+          eventName,
+          dateTime.toIso8601String(),
+        ],
+      );
+      return result.isNotEmpty;
+    } catch (e) {
+      throw Exception('$e');
     }
   }
 
@@ -68,7 +83,7 @@ class AppDatabase {
     try {
       await _database!.close();
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:academic_planner_for_it/utilities/services/google_ocr_services.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,7 +17,7 @@ class ImagePickerServices {
       _imageFile = File(pickedImage!.path);
       await _googleOCRServices.performTextRecognition(_imageFile, ref);
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 }

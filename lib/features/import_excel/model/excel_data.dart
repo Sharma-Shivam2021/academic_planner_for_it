@@ -5,14 +5,12 @@ class ExcelData {
   String eventName;
   DateTime dateTime;
   int eventNotificationState;
-  int source;
 
   ExcelData({
     this.id = -1,
     required this.eventName,
     required this.dateTime,
     this.eventNotificationState = EventNotificationState.created,
-    this.source = DataSource.excel,
   });
 
   @override
@@ -23,20 +21,18 @@ class ExcelData {
           id == other.id &&
           eventName == other.eventName &&
           dateTime == other.dateTime &&
-          eventNotificationState == other.eventNotificationState &&
-          source == other.source);
+          eventNotificationState == other.eventNotificationState);
 
   @override
   int get hashCode =>
       id.hashCode ^
       eventName.hashCode ^
       dateTime.hashCode ^
-      eventNotificationState.hashCode ^
-      source.hashCode;
+      eventNotificationState.hashCode;
 
   @override
   String toString() {
-    return 'ExcelData{ id: $id, eventName: $eventName, dateTime: $dateTime, eventNotificationState: $eventNotificationState, source: $source,}';
+    return 'ExcelData{ id: $id, eventName: $eventName, dateTime: $dateTime, eventNotificationState: $eventNotificationState}';
   }
 
   ExcelData copyWith({
@@ -52,7 +48,6 @@ class ExcelData {
       dateTime: dateTime ?? this.dateTime,
       eventNotificationState:
           eventNotificationState ?? this.eventNotificationState,
-      source: source ?? this.source,
     );
   }
 
@@ -61,7 +56,6 @@ class ExcelData {
       'eventName': eventName,
       'dateTime': dateTime.toIso8601String(),
       'eventNotificationState': eventNotificationState,
-      'source': source,
     };
   }
 
@@ -71,7 +65,6 @@ class ExcelData {
       eventName: map['eventName'] as String,
       dateTime: DateTime.parse(map['dateTime'] as String),
       eventNotificationState: map['eventNotificationState'] as int,
-      source: map['source'] as int,
     );
   }
 }

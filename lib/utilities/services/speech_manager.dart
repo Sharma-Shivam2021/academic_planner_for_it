@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:flutter/material.dart';
 
 final speechProvider = Provider<SpeechManager>((ref) {
   return SpeechManager();
@@ -15,7 +14,7 @@ class SpeechManager {
     try {
       await _stt.initialize();
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 
@@ -34,7 +33,7 @@ class SpeechManager {
         listenOptions: options,
       );
     } catch (e) {
-      debugPrint('Failed to start listening: $e');
+      throw Exception('Failed to start listening: $e');
     }
   }
 
@@ -42,7 +41,7 @@ class SpeechManager {
     try {
       await _stt.stop();
     } catch (e) {
-      debugPrint('Failed to stop stt: $e');
+      throw Exception('Failed to stop stt: $e');
     }
   }
 }

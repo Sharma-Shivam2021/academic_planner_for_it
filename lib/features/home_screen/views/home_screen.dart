@@ -25,7 +25,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ref.invalidate(readAllEventProvider);
       _undo(deletingEvent);
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 
@@ -46,7 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
       }
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 
@@ -80,7 +80,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             );
           });
     } catch (e) {
-      debugPrint('$e');
+      throw Exception('$e');
     }
   }
 

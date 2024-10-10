@@ -14,7 +14,7 @@ class TTSService {
       await tts.setLanguage("en-US");
       await tts.setPitch(1.0);
     } catch (e) {
-      print('$e');
+      throw Exception('$e');
     }
   }
 

@@ -9,11 +9,3 @@ class EventNotificationState {
   static const notified = 1;
   static const spoken = 2;
 }
-
-class DataSource {
-  static const manual = 0;
-  static const excel = 1;
-  static const ocr = 2;
-}
-
-String kNotificationSound = 'new_event_female';

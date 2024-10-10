@@ -66,10 +66,8 @@ class GoogleOCRServices {
         ref.read(ocrListProvider.notifier).addOcrData(event);
       }
     } catch (e) {
-      debugPrint("Error: $e");
+      throw Exception("Error: $e");
     } finally {
-      // Close the recognizer to release resources
-      final TextRecognizer textRecognizer = TextRecognizer();
       textRecognizer.close();
     }
   }
