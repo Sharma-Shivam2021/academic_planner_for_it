@@ -8,10 +8,10 @@ final createEventProvider =
   await eventRepository.addEvent(event);
 });
 
-// final readAllEventProvider = FutureProvider<List<Events>>((ref) async {
-//   final eventRepository = ref.read(eventRepositoryProvider);
-//   return eventRepository.loadEvents();
-// });
+final readAllEventProvider = FutureProvider<List<Events>>((ref) async {
+  final eventRepository = ref.read(eventRepositoryProvider);
+  return eventRepository.loadEvents();
+});
 
 final deleteEventProvider =
     FutureProvider.family<void, Events>((ref, event) async {
@@ -71,6 +71,26 @@ class PaginatedEventNotifier extends StateNotifier<AsyncValue<List<Events>>> {
     if (_page > 1) {
       _page--;
       _loadNextPage();
+    }
+  }
+
+  Future<void> goToPage(int pageNo) async {
+    if (_isLoading || !_hasMore) return;
+    _isLoading = true;
+    try {
+      _page = pageNo;
+      final newEvents = await _eventRepository.loadEventsPaginated(
+        page: _page,
+        pageSize: _pageSize,
+      );
+      if (newEvents.isEmpty) {
+        _hasMore = false;
+      }
+      state = AsyncValue.data(newEvents);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    } finally {
+      _isLoading = false;
     }
   }
 

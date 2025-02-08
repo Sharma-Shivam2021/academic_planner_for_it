@@ -1,5 +1,6 @@
 //Project Packages
 import 'package:academic_planner_for_it/features/home_screen/view_models/event_repository.dart';
+import 'package:academic_planner_for_it/features/home_screen/widgets/search_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,11 +21,35 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final SearchController _searchController = SearchController();
-
+  List<Events> filteredList = [];
   @override
   void initState() {
     super.initState();
     _updateNotificationState();
+    _searchController.addListener(() {
+      _updateFilteredList();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(() {});
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _updateFilteredList() async {
+    List<Events> eventList =
+        await ref.read(eventRepositoryProvider).loadEvents();
+    if (mounted) {
+      setState(() {
+        filteredList = eventList
+            .where((event) => event.eventName
+                .toLowerCase()
+                .contains(_searchController.text.toLowerCase()))
+            .toList();
+      });
+    }
   }
 
   void _deleteEvent(Events deletingEvent) async {
@@ -105,6 +130,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final eventAsyncValue = ref.watch(paginatedEventsProvider);
     final eventAsyncValueNotifier = ref.read(paginatedEventsProvider.notifier);
+    final List<int> pageNoList = List.generate(
+      eventAsyncValueNotifier.totalPage,
+      (i) => i + 1,
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Academic Planner'),
@@ -138,33 +167,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Container(),
-                          ),
-                          Row(
-                            children: [
-                              IconButton.outlined(
-                                onPressed: eventAsyncValueNotifier.page == 1
-                                    ? null
-                                    : () {
-                                        eventAsyncValueNotifier.previousPage();
-                                      },
-                                icon: const Icon(Icons.arrow_back),
-                              ),
-                              const SizedBox(width: 10),
-                              Text('${eventAsyncValueNotifier.page}'),
-                              const SizedBox(width: 10),
-                              IconButton.outlined(
-                                onPressed: eventAsyncValueNotifier.page ==
-                                        eventAsyncValueNotifier.totalPage
-                                    ? null
-                                    : () {
-                                        eventAsyncValueNotifier.nextPage();
-                                      },
-                                icon: const Icon(Icons.arrow_forward),
-                              ),
-                            ],
-                          )
+                          _paginationButtons(
+                              eventAsyncValueNotifier, pageNoList),
+                          _searchBar(),
                         ],
                       ),
                       Expanded(
@@ -207,6 +212,98 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           );
         },
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _searchBar() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SearchAnchor(
+          searchController: _searchController,
+          suggestionsBuilder: (
+            BuildContext context,
+            SearchController _,
+          ) {
+            return filteredList.map((event) {
+              return SearchCard(
+                event: event,
+              );
+            });
+          },
+          builder: (BuildContext context, SearchController controller) {
+            return IconButton(
+              iconSize: 30,
+              onPressed: () {
+                controller.openView();
+              },
+              icon: const Icon(Icons.search),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _paginationButtons(eventAsyncValueNotifier, List<int> pageNoList) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton.outlined(
+          style: IconButton.styleFrom(
+            minimumSize: const Size(50, 1),
+          ),
+          onPressed: eventAsyncValueNotifier.page == 1
+              ? null
+              : () {
+                  eventAsyncValueNotifier.previousPage();
+                },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        const SizedBox(width: 10),
+        _dropDownButton(pageNoList, eventAsyncValueNotifier),
+        const SizedBox(width: 10),
+        IconButton.outlined(
+          style: IconButton.styleFrom(
+            minimumSize: const Size(50, 1),
+          ),
+          onPressed:
+              eventAsyncValueNotifier.page == eventAsyncValueNotifier.totalPage
+                  ? null
+                  : () {
+                      eventAsyncValueNotifier.nextPage();
+                    },
+          icon: const Icon(Icons.arrow_forward),
+        ),
+      ],
+    );
+  }
+
+  Widget _dropDownButton(List<int> pageNoList, eventAsyncValueNotifier) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+      child: DropdownMenu<int>(
+        initialSelection: eventAsyncValueNotifier.page,
+        dropdownMenuEntries:
+            pageNoList.map<DropdownMenuEntry<int>>((int value) {
+          return DropdownMenuEntry<int>(
+            value: value,
+            label: '$value',
+          );
+        }).toList(),
+        onSelected: (int? newValue) {
+          if (newValue != null) {
+            eventAsyncValueNotifier.goToPage(newValue);
+          }
+        },
+        inputDecorationTheme: InputDecorationTheme(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          constraints: BoxConstraints.tight(
+            const Size.fromHeight(50),
+          ),
+        ),
       ),
     );
   }
