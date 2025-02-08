@@ -19,10 +19,18 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final SearchController _searchController = SearchController();
+
+  @override
+  void initState() {
+    super.initState();
+    _updateNotificationState();
+  }
+
   void _deleteEvent(Events deletingEvent) async {
     try {
       await ref.read(deleteEventProvider(deletingEvent).future);
-      ref.invalidate(readAllEventProvider);
+      ref.invalidate(paginatedEventsProvider);
       _undo(deletingEvent);
     } catch (e) {
       throw Exception('$e');
@@ -39,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               label: 'Undo',
               onPressed: () {
                 ref.read(createEventProvider(event));
-                ref.invalidate(readAllEventProvider);
+                ref.invalidate(paginatedEventsProvider);
               },
             ),
           ),
@@ -64,7 +72,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ElevatedButton(
                   onPressed: () async {
                     await ref.read(eventRepositoryProvider).clearDatabase();
-                    ref.invalidate(readAllEventProvider);
+                    ref.invalidate(paginatedEventsProvider);
                     _pop();
                   },
                   child: const Text('Yes'),
@@ -88,20 +96,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Navigator.of(context).pop();
   }
 
-  @override
-  void initState() {
-    _updateNotificationState();
-    super.initState();
-  }
-
   void _updateNotificationState() async {
     await ref.read(eventRepositoryProvider).updateEventNotificationState();
-    ref.invalidate(readAllEventProvider);
+    ref.invalidate(paginatedEventsProvider);
   }
 
   @override
   Widget build(BuildContext context) {
-    final eventAsyncValue = ref.watch(readAllEventProvider);
+    final eventAsyncValue = ref.watch(paginatedEventsProvider);
+    final eventAsyncValueNotifier = ref.read(paginatedEventsProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Academic Planner'),
@@ -115,26 +118,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: eventAsyncValue.when(
         data: (events) {
           return events.isEmpty
-              ? const Center(
-                  child: Text(
-                    'Press the \'+\' button to add new Events.',
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 18,
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Center(
+                    child: Text(
+                      'Press the \'+\' button to add new Events.',
+                      overflow: TextOverflow.clip,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 )
               : Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    itemCount: events.length,
-                    itemBuilder: (context, index) {
-                      final event = events[index];
-                      return EventListCard(
-                        event: event,
-                        onDelete: _deleteEvent,
-                      );
-                    },
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(),
+                          ),
+                          Row(
+                            children: [
+                              IconButton.outlined(
+                                onPressed: eventAsyncValueNotifier.page == 1
+                                    ? null
+                                    : () {
+                                        eventAsyncValueNotifier.previousPage();
+                                      },
+                                icon: const Icon(Icons.arrow_back),
+                              ),
+                              const SizedBox(width: 10),
+                              Text('${eventAsyncValueNotifier.page}'),
+                              const SizedBox(width: 10),
+                              IconButton.outlined(
+                                onPressed: eventAsyncValueNotifier.page ==
+                                        eventAsyncValueNotifier.totalPage
+                                    ? null
+                                    : () {
+                                        eventAsyncValueNotifier.nextPage();
+                                      },
+                                icon: const Icon(Icons.arrow_forward),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: events.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index < events.length) {
+                              final event = events[index];
+                              return EventListCard(
+                                event: event,
+                                onDelete: _deleteEvent,
+                              );
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 );
         },

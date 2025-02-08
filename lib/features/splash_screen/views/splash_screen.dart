@@ -46,7 +46,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Academic Planner for IT',
+              'Academic Planner',
               overflow: TextOverflow.clip,
               style: TextStyle(
                 fontSize: 24,

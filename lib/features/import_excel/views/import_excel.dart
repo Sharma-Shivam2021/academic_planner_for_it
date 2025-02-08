@@ -5,6 +5,7 @@ import 'package:academic_planner_for_it/utilities/services/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../utilities/common_widgets/alert_dialog_box.dart';
 import '../widgets/excel_list.dart';
 import '../widgets/excel_utility_button.dart';
 
@@ -19,8 +20,24 @@ class ImportExcelScreen extends ConsumerStatefulWidget {
 class _ImportExcelScreenState extends ConsumerState<ImportExcelScreen> {
   final FilePickerServices _pickerServices = FilePickerServices();
 
-  void _pickFile(ref) {
-    _pickerServices.pickFile(ref);
+  void _pickFile(ref) async {
+    try {
+      final errorText = await _pickerServices.pickFile(ref);
+      if (errorText.isNotEmpty) {
+        warning(errorText);
+      }
+    } catch (e) {
+      warning('An unexpected error occurred: $e');
+    }
+  }
+
+  void warning(String errorText) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return buildAlertDialog(context, "Warning!", errorText);
+      },
+    );
   }
 
   @override

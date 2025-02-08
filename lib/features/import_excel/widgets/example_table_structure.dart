@@ -22,6 +22,9 @@ class ExampleTableStructure extends StatelessWidget {
           Image.asset(
             'assets/image/example_excel_table.png',
             height: size.height * 0.40,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
           ),
           const SizedBox(height: 10),
           Row(

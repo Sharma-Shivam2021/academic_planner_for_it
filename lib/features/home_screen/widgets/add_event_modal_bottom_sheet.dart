@@ -92,7 +92,7 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
     );
     try {
       await ref.read(createEventProvider(newEvent).future).then((_) {
-        ref.invalidate(readAllEventProvider);
+        ref.invalidate(paginatedEventsProvider);
         if (mounted) {
           pop();
         }
@@ -182,7 +182,8 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return buildAlertDialog(context);
+                        return buildAlertDialog(
+                            context, "Alert!", "Fields should not be empty.");
                       },
                     );
                   }

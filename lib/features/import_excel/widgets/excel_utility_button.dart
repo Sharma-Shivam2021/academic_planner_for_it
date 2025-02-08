@@ -22,7 +22,7 @@ class _ExcelUtilityButtonsState extends ConsumerState<ExcelUtilityButtons> {
   void onAdd() async {
     final excelData = ref.watch(excelListNotifierProvider);
     ref.read(saveExcelToDatabaseProvider(excelData).future).then((_) {
-      ref.invalidate(readAllEventProvider);
+      ref.invalidate(paginatedEventsProvider);
       ref.read(excelListNotifierProvider.notifier).clearList();
       pop();
     });

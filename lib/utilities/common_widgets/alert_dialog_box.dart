@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-AlertDialog buildAlertDialog(BuildContext context) {
+AlertDialog buildAlertDialog(
+    BuildContext context, String title, String content) {
   return AlertDialog(
-    title: const Text('Alert'),
-    content: const Text("Fields should not be empty."),
+    title: Text(title),
+    content: Text(content),
     actions: [
       ElevatedButton(
         onPressed: () {

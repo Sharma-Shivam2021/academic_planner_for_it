@@ -1,4 +1,6 @@
-//Project Packages
+///Project Packages
+library;
+
 import 'package:academic_planner_for_it/utilities/theme/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'features/splash_screen/views/splash_screen.dart';
 import 'utilities/routes/routes.dart';
 
+/// Main Function
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -18,6 +21,7 @@ void main() {
   );
 }
 
+///Start of the App
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

@@ -22,6 +22,41 @@ class EventRepository {
 
   Future<Database> get _db async => _dbFuture;
 
+  Future<List<Events>> loadEventsPaginated({
+    required int page,
+    required int pageSize,
+  }) async {
+    try {
+      final db = await _db;
+      final int offset = (page - 1) * pageSize;
+      final List<Map<String, dynamic>> eventMap = await db.query(
+        kEventsTable,
+        limit: pageSize,
+        offset: offset,
+        orderBy: 'dateTime ASC',
+      );
+      final events = List.generate(
+        eventMap.length,
+        (i) {
+          return Events.fromMap(eventMap[i]);
+        },
+      );
+      return events;
+    } catch (e) {
+      throw Exception('Error loading paginated events: $e');
+    }
+  }
+
+  Future<int> getTotalEventCount() async {
+    try {
+      final db = await _db;
+      final result = await db.rawQuery(kTableCount);
+      return Sqflite.firstIntValue(result) ?? 0;
+    } catch (e) {
+      throw Exception('Error getting total event count: $e');
+    }
+  }
+
   Future<List<Events>> loadEvents() async {
     try {
       final db = await _db;

@@ -1,4 +1,4 @@
-package com.example.academic_planner_for_it
+package com.shivam.academic_planner_for_it
 
 import io.flutter.embedding.android.FlutterActivity
 

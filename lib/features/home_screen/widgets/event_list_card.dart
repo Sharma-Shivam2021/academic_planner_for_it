@@ -38,17 +38,18 @@ class EventListCard extends ConsumerWidget {
           trailing: SizedBox(
             width: MediaQuery.of(context).size.width * 0.25,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
                   onPressed: () {
                     onDelete(event);
                   },
                   icon: const Icon(
-                    Icons.delete_rounded,
+                    Icons.edit_rounded,
                     size: 30,
                   ),
                 ),
-                const SizedBox(width: 2),
+                const SizedBox(width: 10),
                 CircleAvatar(
                   backgroundColor: AppTheme.lightScheme.secondary,
                   child: Icon(

@@ -174,7 +174,8 @@ class _EditExcelDataState extends ConsumerState<EditExcelData> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return buildAlertDialog(context);
+                        return buildAlertDialog(
+                            context, "Alert!", "Fields should not be empty.");
                       },
                     );
                   }

@@ -44,8 +44,6 @@ Powered by the google_mlkit_text_recognition package, the app extracts text from
 ## Packages Used
 ### flutter_riverpod:
 State management solution.
-### google_mlkit_text_recognition: 
-OCR for text recognition.
 ### sqflite: 
 SQLite database integration.
 ### intl:
