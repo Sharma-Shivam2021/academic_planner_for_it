@@ -5,6 +5,8 @@ import 'package:academic_planner_for_it/utilities/services/notification_services
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../../utilities/constants/date_formatter.dart';
+
 final excelRepositoryProvider = Provider<ExcelRepository>((ref) {
   final dbFuture = ref.read(databaseProvider);
   return ExcelRepository(dbFuture);
@@ -50,7 +52,7 @@ class ExcelRepository {
           'Event Reminder',
           excelData.eventName,
           excelData.dateTime,
-          "${excelData.eventName} on ${excelData.dateTime.day}/${excelData.dateTime.month}/${excelData.dateTime.year}",
+          "${excelData.eventName} - ${returnDate(excelData.dateTime)}",
         );
       }
     } catch (e) {

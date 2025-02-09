@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 //Project Class
+import '../../../utilities/constants/date_formatter.dart';
 import '../../../utilities/services/database.dart';
 import '../models/events.dart';
 
@@ -110,7 +111,7 @@ class EventRepository {
           'Event Reminder',
           event.eventName,
           event.dateTime,
-          "${event.eventName} on ${event.dateTime.day}/${event.dateTime.month}/${event.dateTime.year}",
+          "${event.eventName} - ${returnDate(event.dateTime)}",
         );
       }
     } catch (e) {

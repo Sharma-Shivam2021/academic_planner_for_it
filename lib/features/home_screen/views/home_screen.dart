@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //Project Classes
+import '../../../utilities/services/share_event_function.dart';
 import '../models/events.dart';
 import '../view_models/event_provider.dart';
 import '../widgets/add_event_modal_bottom_sheet.dart';
@@ -22,6 +23,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Events> filteredList = [];
   List<Events> allEvents = [];
+  Set<Events> selectedEvents = {};
+  bool isSelectionMode = false;
   @override
   void initState() {
     super.initState();
@@ -135,6 +138,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.invalidate(paginatedEventsProvider);
   }
 
+  void _toggleSelection(Events event) {
+    setState(() {
+      if (selectedEvents.contains(event)) {
+        selectedEvents.remove(event);
+      } else {
+        selectedEvents.add(event);
+      }
+      isSelectionMode = selectedEvents.isNotEmpty;
+    });
+  }
+
+  void _deleteSelectedEvents() {
+    for (var event in selectedEvents) {
+      ref.read(deleteEventProvider(event).future);
+    }
+    ref.invalidate(paginatedEventsProvider);
+    setState(() {
+      isSelectionMode = false;
+      selectedEvents.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final eventAsyncValue = ref.watch(paginatedEventsProvider);
@@ -147,9 +172,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(
         title: const Text('Academic Planner'),
         actions: [
+          if (isSelectionMode) ...[
+            IconButton(
+              onPressed: _deleteSelectedEvents,
+              icon: const Icon(Icons.delete),
+            ),
+            IconButton(
+              onPressed: () {
+                onShareMultipleEvents(context, selectedEvents.toList());
+              },
+              icon: const Icon(Icons.share),
+            )
+          ],
           IconButton(
             onPressed: _clearDatabase,
-            icon: const Icon(Icons.delete),
+            icon: const Icon(Icons.delete_sweep),
           ),
         ],
       ),
@@ -190,6 +227,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               return EventListCard(
                                 event: event,
                                 onDelete: _deleteEvent,
+                                isSelectionMode: isSelectionMode,
+                                isSelected: selectedEvents.contains(event),
+                                onSelectToggle: () => _toggleSelection(event),
                               );
                             }
                             return null;

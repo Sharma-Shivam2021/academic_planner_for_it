@@ -8,8 +8,18 @@ import '../../../utilities/constants/constants.dart';
 import '../../../utilities/theme/themes.dart';
 
 class EventListCard extends ConsumerWidget {
-  const EventListCard({required this.event, required this.onDelete, super.key});
+  const EventListCard({
+    required this.isSelected,
+    required this.isSelectionMode,
+    required this.onSelectToggle,
+    required this.event,
+    required this.onDelete,
+    super.key,
+  });
   final Events event;
+  final bool isSelectionMode;
+  final bool isSelected;
+  final VoidCallback onSelectToggle;
   final void Function(Events) onDelete;
 
   @override
@@ -23,8 +33,20 @@ class EventListCard extends ConsumerWidget {
       child: Card(
         child: ListTile(
           onTap: () {
-            _buildEvenCardTapBox(context);
+            if (isSelectionMode) {
+              onSelectToggle();
+            } else {
+              _buildEvenCardTapBox(context);
+            }
           },
+          onLongPress: onSelectToggle,
+          leading: isSelectionMode
+              ? Checkbox(
+                  value: isSelected,
+                  onChanged: (bool? value) {
+                    onSelectToggle();
+                  })
+              : null,
           title: Text(
             event.eventName,
             maxLines: 1,
