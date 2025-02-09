@@ -11,3 +11,7 @@ void onShare(BuildContext context, Events event) async {
     throw Exception('$e');
   }
 }
+
+void onShareFromNotification(String payload) async {
+  await Share.share(payload);
+}

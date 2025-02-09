@@ -50,7 +50,7 @@ class ExcelRepository {
           'Event Reminder',
           excelData.eventName,
           excelData.dateTime,
-          excelData.eventName,
+          "${excelData.eventName} on ${excelData.dateTime.day}/${excelData.dateTime.month}/${excelData.dateTime.year}",
         );
       }
     } catch (e) {

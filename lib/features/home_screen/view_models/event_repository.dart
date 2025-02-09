@@ -110,7 +110,7 @@ class EventRepository {
           'Event Reminder',
           event.eventName,
           event.dateTime,
-          event.eventName,
+          "${event.eventName} on ${event.dateTime.day}/${event.dateTime.month}/${event.dateTime.year}",
         );
       }
     } catch (e) {

@@ -1,6 +1,5 @@
 //Project Packages
 import 'package:academic_planner_for_it/features/home_screen/view_models/event_repository.dart';
-import 'package:academic_planner_for_it/features/home_screen/widgets/search_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,6 +9,7 @@ import '../view_models/event_provider.dart';
 import '../widgets/add_event_modal_bottom_sheet.dart';
 import '../widgets/event_list_card.dart';
 import '../../../utilities/common_widgets/custom_drawer.dart';
+import 'search_delegate.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -19,13 +19,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final SearchController _searchController = SearchController();
+  final TextEditingController _searchController = TextEditingController();
   List<Events> filteredList = [];
+  List<Events> allEvents = [];
   @override
   void initState() {
     super.initState();
     _updateNotificationState();
-    _updateFilteredList();
+    _fetchEvents();
     _searchController.addListener(_updateFilteredList);
   }
 
@@ -36,16 +37,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  void _updateFilteredList() async {
+  Future<void> _fetchEvents() async {
     List<Events> eventList = await ref.read(readAllEventProvider.future);
-    setState(
-      () {
-        filteredList = eventList
-            .where((event) => event.eventName
-                .toLowerCase()
-                .contains(_searchController.text.toLowerCase()))
-            .toList();
-      },
+    setState(() {
+      allEvents = eventList;
+      filteredList = allEvents;
+    });
+  }
+
+  Future<void> _updateFilteredList() async {
+    String searchText = _searchController.text.toLowerCase();
+    setState(() {
+      filteredList = allEvents
+          .where((event) => event.eventName.toLowerCase().contains(searchText))
+          .toList();
+    });
+  }
+
+  void _opensSearchView(BuildContext context) {
+    showSearch(
+      context: context,
+      delegate: EventSearchDelegate(allEvents),
     );
   }
 
@@ -216,27 +228,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _searchBar() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SearchAnchor(
-        searchController: _searchController,
-        suggestionsBuilder: (
-          BuildContext context,
-          SearchController _,
-        ) {
-          return filteredList.map((event) {
-            return SearchCard(
-              event: event,
-            );
-          });
+      child: IconButton(
+        onPressed: () {
+          _opensSearchView(context);
         },
-        builder: (BuildContext context, SearchController controller) {
-          return IconButton(
-            iconSize: 30,
-            onPressed: () {
-              controller.openView();
-            },
-            icon: const Icon(Icons.search),
-          );
-        },
+        icon: const Icon(Icons.search),
       ),
     );
   }

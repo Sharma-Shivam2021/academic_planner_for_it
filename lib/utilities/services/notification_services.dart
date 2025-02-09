@@ -1,3 +1,4 @@
+import 'package:academic_planner_for_it/utilities/services/share_event_function.dart';
 import 'package:academic_planner_for_it/utilities/services/tts_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -62,6 +63,7 @@ class NotificationServices {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
+        payload: payload,
       );
     } catch (e) {
       throw Exception('$e');
@@ -77,12 +79,19 @@ class NotificationServices {
       enableVibration: true,
       playSound: true,
       sound: RawResourceAndroidNotificationSound('new_event_female'),
+      actions: [
+        AndroidNotificationAction(
+          'shareId',
+          'Share',
+          showsUserInterface: true,
+        ),
+      ],
     ),
   );
 
   // Handle notification taps
   void _handleNotification(NotificationResponse response) {
-    ttsService.speak(response.payload!);
+    handleNotificationAction(response);
   }
 
   // removing a notification
@@ -111,5 +120,13 @@ class NotificationServices {
 }
 
 void _handleBackGroundNotification(NotificationResponse response) {
-  ttsService.speak(response.payload!);
+  handleNotificationAction(response);
+}
+
+void handleNotificationAction(NotificationResponse response) {
+  if (response.actionId == 'shareId') {
+    onShareFromNotification(response.payload!);
+  } else {
+    ttsService.speak(response.payload!);
+  }
 }
