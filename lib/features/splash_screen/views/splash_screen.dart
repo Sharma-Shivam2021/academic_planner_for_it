@@ -4,6 +4,8 @@ import 'package:academic_planner_for_it/utilities/services/tts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../utilities/services/database.dart';
+import '../../home_screen/models/events.dart';
+import '../../home_screen/view_models/event_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   static const String routeName = '/splashScreen';

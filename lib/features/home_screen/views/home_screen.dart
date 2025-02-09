@@ -14,7 +14,6 @@ import '../../../utilities/common_widgets/custom_drawer.dart';
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   static const String routeName = '/homeScreen';
-
   @override
   ConsumerState createState() => _HomeScreenState();
 }
@@ -26,30 +25,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     _updateNotificationState();
-    _searchController.addListener(() {
-      _updateFilteredList();
-    });
+    _updateFilteredList();
+    _searchController.addListener(_updateFilteredList);
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(() {});
+    _searchController.removeListener(_updateFilteredList);
     _searchController.dispose();
     super.dispose();
   }
 
   void _updateFilteredList() async {
-    List<Events> eventList =
-        await ref.read(eventRepositoryProvider).loadEvents();
-    if (mounted) {
-      setState(() {
+    List<Events> eventList = await ref.read(readAllEventProvider.future);
+    setState(
+      () {
         filteredList = eventList
             .where((event) => event.eventName
                 .toLowerCase()
                 .contains(_searchController.text.toLowerCase()))
             .toList();
-      });
-    }
+      },
+    );
   }
 
   void _deleteEvent(Events deletingEvent) async {
@@ -217,31 +214,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _searchBar() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SearchAnchor(
-          searchController: _searchController,
-          suggestionsBuilder: (
-            BuildContext context,
-            SearchController _,
-          ) {
-            return filteredList.map((event) {
-              return SearchCard(
-                event: event,
-              );
-            });
-          },
-          builder: (BuildContext context, SearchController controller) {
-            return IconButton(
-              iconSize: 30,
-              onPressed: () {
-                controller.openView();
-              },
-              icon: const Icon(Icons.search),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SearchAnchor(
+        searchController: _searchController,
+        suggestionsBuilder: (
+          BuildContext context,
+          SearchController _,
+        ) {
+          return filteredList.map((event) {
+            return SearchCard(
+              event: event,
             );
-          },
-        ),
+          });
+        },
+        builder: (BuildContext context, SearchController controller) {
+          return IconButton(
+            iconSize: 30,
+            onPressed: () {
+              controller.openView();
+            },
+            icon: const Icon(Icons.search),
+          );
+        },
       ),
     );
   }

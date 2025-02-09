@@ -5,6 +5,7 @@ import 'package:academic_planner_for_it/utilities/theme/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 //Project Classes
 import 'features/splash_screen/views/splash_screen.dart';
@@ -13,6 +14,7 @@ import 'utilities/routes/routes.dart';
 /// Main Function
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  Share.downloadFallbackEnabled = true;
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     const ProviderScope(

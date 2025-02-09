@@ -1,4 +1,5 @@
 import 'package:academic_planner_for_it/features/home_screen/models/events.dart';
+import 'package:academic_planner_for_it/utilities/services/share_event_function.dart';
 import 'package:academic_planner_for_it/utilities/constants/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,6 +34,15 @@ class SearchCard extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Builder(builder: (context) {
+                return IconButton(
+                  onPressed: () {
+                    onShare(context, event);
+                  },
+                  icon: const Icon(Icons.share),
+                );
+              }),
+              const SizedBox(width: 5),
               CircleAvatar(
                 backgroundColor: AppTheme.lightScheme.secondary,
                 child: Icon(
