@@ -1,4 +1,5 @@
 //Project Package
+import 'package:academic_planner_for_it/features/home_screen/view_models/all_event_list_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project Class
@@ -93,6 +94,7 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
     try {
       await ref.read(createEventProvider(newEvent).future).then((_) {
         ref.invalidate(paginatedEventsProvider);
+        ref.read(allEventsProvider.notifier).addEvent(newEvent);
         if (mounted) {
           pop();
         }

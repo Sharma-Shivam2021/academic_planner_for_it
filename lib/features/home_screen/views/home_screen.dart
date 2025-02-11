@@ -1,5 +1,6 @@
 //Project Packages
 import 'package:academic_planner_for_it/features/home_screen/view_models/event_repository.dart';
+import 'package:academic_planner_for_it/features/home_screen/view_models/all_event_list_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,14 +23,12 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Events> filteredList = [];
-  List<Events> allEvents = [];
   Set<Events> selectedEvents = {};
   bool isSelectionMode = false;
   @override
   void initState() {
     super.initState();
     _updateNotificationState();
-    _fetchEvents();
     _searchController.addListener(_updateFilteredList);
   }
 
@@ -40,16 +39,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _fetchEvents() async {
-    List<Events> eventList = await ref.read(readAllEventProvider.future);
-    setState(() {
-      allEvents = eventList;
-      filteredList = allEvents;
-    });
-  }
-
   Future<void> _updateFilteredList() async {
     String searchText = _searchController.text.toLowerCase();
+    final allEvents = ref.read(allEventsProvider);
     setState(() {
       filteredList = allEvents
           .where((event) => event.eventName.toLowerCase().contains(searchText))
@@ -58,6 +50,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _opensSearchView(BuildContext context) {
+    final allEvents = ref.read(allEventsProvider);
     showSearch(
       context: context,
       delegate: EventSearchDelegate(allEvents),
@@ -68,6 +61,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     try {
       await ref.read(deleteEventProvider(deletingEvent).future);
       ref.invalidate(paginatedEventsProvider);
+      ref.read(allEventsProvider.notifier).removeEvent(deletingEvent);
       _undo(deletingEvent);
     } catch (e) {
       throw Exception('$e');
@@ -85,6 +79,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onPressed: () {
                 ref.read(createEventProvider(event));
                 ref.invalidate(paginatedEventsProvider);
+                ref.read(allEventsProvider.notifier).addEvent(event);
               },
             ),
           ),
@@ -110,6 +105,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   onPressed: () async {
                     await ref.read(eventRepositoryProvider).clearDatabase();
                     ref.invalidate(paginatedEventsProvider);
+                    ref.read(allEventsProvider.notifier).clearEvents();
                     _pop();
                   },
                   child: const Text('Yes'),
@@ -152,8 +148,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _deleteSelectedEvents() {
     for (var event in selectedEvents) {
       ref.read(deleteEventProvider(event).future);
+      ref.read(allEventsProvider.notifier).removeEvent(event);
     }
     ref.invalidate(paginatedEventsProvider);
+
     setState(() {
       isSelectionMode = false;
       selectedEvents.clear();
@@ -168,6 +166,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       eventAsyncValueNotifier.totalPage,
       (i) => i + 1,
     );
+    ref.watch(allEventsProvider);
+    _updateFilteredList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Academic Planner'),
@@ -299,12 +299,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           style: IconButton.styleFrom(
             minimumSize: const Size(50, 1),
           ),
-          onPressed:
-              eventAsyncValueNotifier.page == eventAsyncValueNotifier.totalPage
-                  ? null
-                  : () {
-                      eventAsyncValueNotifier.nextPage();
-                    },
+          onPressed: (eventAsyncValueNotifier.page ==
+                  eventAsyncValueNotifier.totalPage)
+              ? null
+              : () {
+                  eventAsyncValueNotifier.nextPage();
+                },
           icon: const Icon(Icons.arrow_forward),
         ),
       ],

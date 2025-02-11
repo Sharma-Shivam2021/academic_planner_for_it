@@ -1,4 +1,6 @@
 // Project Package
+import 'dart:async';
+
 import 'package:academic_planner_for_it/utilities/constants/constants.dart';
 import 'package:academic_planner_for_it/utilities/services/notification_services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -18,15 +20,12 @@ final NotificationServices notificationServices = NotificationServices();
 
 class EventRepository {
   final Future<Database> _dbFuture;
-
   EventRepository(this._dbFuture);
 
   Future<Database> get _db async => _dbFuture;
 
-  Future<List<Events>> loadEventsPaginated({
-    required int page,
-    required int pageSize,
-  }) async {
+  Future<List<Events>> loadEventsPaginated(
+      {required int page, required int pageSize}) async {
     try {
       final db = await _db;
       final int offset = (page - 1) * pageSize;
