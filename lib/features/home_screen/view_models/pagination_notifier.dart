@@ -18,20 +18,19 @@ class PaginatedEventNotifier extends StateNotifier<AsyncValue<List<Events>>> {
 
   Future<void> _initialize() async {
     await _fetchTotalPages();
-    await _loadNextPage();
+    await _loadPage(1);
   }
 
-  Future<void> _loadNextPage() async {
-    if (_isLoading || !_hasMore) return;
+  Future<void> _loadPage(int pageNo) async {
+    if (_isLoading) return;
     _isLoading = true;
     try {
       final newEvents = await _eventRepository.loadEventsPaginated(
-        page: _page,
+        page: pageNo,
         pageSize: _pageSize,
       );
-      if (newEvents.isEmpty) {
-        _hasMore = false;
-      }
+      _page = pageNo;
+      _hasMore = newEvents.length == _pageSize;
       state = AsyncValue.data(newEvents);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -41,42 +40,34 @@ class PaginatedEventNotifier extends StateNotifier<AsyncValue<List<Events>>> {
   }
 
   void nextPage() {
-    if (!_hasMore) return;
-    _page++;
-    _loadNextPage();
+    if (_hasMore && _page < _totalPages) {
+      _loadPage(_page + 1);
+    }
   }
 
   void previousPage() {
     if (_page > 1) {
-      _page--;
-      _loadNextPage();
+      _loadPage(_page - 1);
     }
   }
 
   Future<void> goToPage(int pageNo) async {
-    if (_isLoading || !_hasMore) return;
-    _isLoading = true;
-    try {
-      _page = pageNo;
-      final newEvents = await _eventRepository.loadEventsPaginated(
-        page: _page,
-        pageSize: _pageSize,
-      );
-      if (newEvents.isEmpty) {
-        _hasMore = false;
-      }
-      state = AsyncValue.data(newEvents);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    } finally {
-      _isLoading = false;
+    if (_isLoading) return;
+    if (pageNo > 0 && pageNo <= _totalPages) {
+      await _loadPage(pageNo);
     }
+  }
+
+  Future<void> refreshPagination() async {
+    await _fetchTotalPages();
+    await _loadPage(_page);
   }
 
   Future<void> _fetchTotalPages() async {
     try {
       int totalEvents = await _eventRepository.getTotalEventCount();
       _totalPages = (totalEvents / _pageSize).ceil();
+      if (_totalPages == 0) _totalPages = 1;
     } catch (e) {
       throw Exception('$e');
     }

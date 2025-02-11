@@ -145,12 +145,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
-  void _deleteSelectedEvents() {
+  void _deleteSelectedEvents() async {
     for (var event in selectedEvents) {
       ref.read(deleteEventProvider(event).future);
       ref.read(allEventsProvider.notifier).removeEvent(event);
     }
     ref.invalidate(paginatedEventsProvider);
+    await Future.delayed(const Duration(milliseconds: 300));
+    ref.read(paginatedEventsProvider.notifier).refreshPagination();
 
     setState(() {
       isSelectionMode = false;
