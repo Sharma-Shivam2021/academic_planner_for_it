@@ -45,7 +45,7 @@ class AppTheme {
     ),
     inputDecorationTheme: _inputDecorationTheme(),
     bottomSheetTheme: _bottomSheetTheme(darkScheme.secondaryContainer),
-    elevatedButtonTheme: _elevatedButtonThemeData(darkScheme.primaryContainer),
+    elevatedButtonTheme: _elevatedButtonThemeData(darkScheme.onPrimary),
     cardTheme: CardTheme(
       color: darkScheme.secondaryContainer,
     ),

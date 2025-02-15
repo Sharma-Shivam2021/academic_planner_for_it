@@ -1,4 +1,5 @@
 import 'package:academic_planner_for_it/features/home_screen/models/events.dart';
+import 'package:academic_planner_for_it/features/home_screen/views/edit_event.dart';
 import 'package:academic_planner_for_it/utilities/services/share_event_function.dart';
 import 'package:academic_planner_for_it/utilities/constants/date_formatter.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +18,6 @@ class SearchCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
-        onLongPress: () {
-          //Add Share Functionality
-        },
         title: Text(
           event.eventName,
           maxLines: 1,
@@ -41,7 +39,13 @@ class SearchCard extends ConsumerWidget {
               }),
               const SizedBox(width: 5),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditEvent(event: event)),
+                  );
+                },
                 icon: const Icon(Icons.edit),
               ),
             ],

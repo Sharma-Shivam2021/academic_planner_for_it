@@ -1,4 +1,5 @@
 import 'package:academic_planner_for_it/features/home_screen/models/events.dart';
+import 'package:academic_planner_for_it/features/home_screen/views/edit_event.dart';
 import 'package:academic_planner_for_it/utilities/constants/date_formatter.dart';
 import 'package:academic_planner_for_it/utilities/services/share_event_function.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,13 @@ class EventListCard extends ConsumerWidget {
             const SizedBox(height: 10),
             Column(
               children: [
-                _elevatedButton(context, Icons.edit, "Edit", () {}),
+                _elevatedButton(context, Icons.edit, "Edit", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditEvent(event: event)),
+                  );
+                }),
                 const SizedBox(height: 10),
                 _elevatedButton(context, Icons.share, "Share", () {
                   onShare(context, event);
