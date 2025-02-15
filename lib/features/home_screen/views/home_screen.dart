@@ -13,6 +13,9 @@ import '../widgets/event_list_card.dart';
 import '../../../utilities/common_widgets/custom_drawer.dart';
 import 'search_delegate.dart';
 
+/// The main screen of the application, displaying a list of events.
+///
+/// This screen allows users to view, search, add, delete, and share events.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   static const String routeName = '/homeScreen';
@@ -39,6 +42,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
+  /// Updates the filtered list of events based on the search text.
   Future<void> _updateFilteredList() async {
     String searchText = _searchController.text.toLowerCase();
     final allEvents = ref.read(allEventsProvider);
@@ -49,6 +53,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  /// Opens the search view to search for events.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   void _opensSearchView(BuildContext context) {
     final allEvents = ref.read(allEventsProvider);
     showSearch(
@@ -57,6 +65,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  /// Deletes an event from the database and the UI.
+  ///
+  /// Parameters:
+  ///   - [deletingEvent]: The event to delete.
   void _deleteEvent(Events deletingEvent) async {
     try {
       await ref.read(deleteEventProvider(deletingEvent).future);
@@ -68,6 +80,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  /// Shows a snack bar to undo the deletion of an event.
+  ///
+  /// Parameters:
+  ///   - [event]: The event that was deleted.
   void _undo(Events event) async {
     try {
       if (mounted) {
@@ -90,6 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  /// Clears all events from the database.
   void _clearDatabase() async {
     try {
       showDialog(
@@ -125,15 +142,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  /// Pops the current route from the navigator.
   void _pop() {
     Navigator.of(context).pop();
   }
 
+  /// Updates the notification state of all events.
   void _updateNotificationState() async {
     await ref.read(eventRepositoryProvider).updateEventNotificationState();
     ref.invalidate(paginatedEventsProvider);
   }
 
+  /// Toggles the selection state of an event.
+  ///
+  /// Parameters:
+  ///   - [event]: The event to toggle.
   void _toggleSelection(Events event) {
     setState(() {
       if (selectedEvents.contains(event)) {
@@ -145,6 +168,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  /// Deletes all selected events.
   void _deleteSelectedEvents() async {
     for (var event in selectedEvents) {
       ref.read(deleteEventProvider(event).future);
@@ -267,6 +291,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  /// Builds the search bar widget.
   Widget _searchBar() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -279,6 +304,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  /// Builds the pagination buttons widget.
+  ///
+  /// Parameters:
+  ///   - [eventAsyncValueNotifier]: The notifier for the paginated events.
+  ///   - [pageNoList]: The list of page numbers.
   Widget _paginationButtons(eventAsyncValueNotifier, List<int> pageNoList) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -313,6 +343,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  /// Builds the dropdown button for page selection.
+  ///
+  /// Parameters:
+  ///   - [pageNoList]: The list of page numbers.
+  ///   - [eventAsyncValueNotifier]: The notifier for the paginated events.
   Widget _dropDownButton(List<int> pageNoList, eventAsyncValueNotifier) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),

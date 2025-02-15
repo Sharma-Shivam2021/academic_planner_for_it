@@ -9,6 +9,10 @@ import '../../../utilities/common_widgets/alert_dialog_box.dart';
 import '../widgets/excel_list.dart';
 import '../widgets/excel_utility_button.dart';
 
+/// The screen for importing data from an Excel file.
+///
+/// This screen allows the user to pick an Excel file, view its contents, and
+/// import the data into the application.
 class ImportExcelScreen extends ConsumerStatefulWidget {
   const ImportExcelScreen({super.key});
   static const String routeName = '/importExcelScreen';
@@ -20,6 +24,14 @@ class ImportExcelScreen extends ConsumerStatefulWidget {
 class _ImportExcelScreenState extends ConsumerState<ImportExcelScreen> {
   final FilePickerServices _pickerServices = FilePickerServices();
 
+  /// Picks an Excel file and processes it.
+  ///
+  /// This method uses the [_pickerServices] to allow the user to select an
+  /// Excel file. If an error occurs during file picking or processing, a
+  /// warning dialog is displayed.
+  ///
+  /// Parameters:
+  ///   - [ref]: The [WidgetRef] for interacting with Riverpod.
   void _pickFile(ref) async {
     try {
       final errorText = await _pickerServices.pickFile(ref);
@@ -31,6 +43,10 @@ class _ImportExcelScreenState extends ConsumerState<ImportExcelScreen> {
     }
   }
 
+  /// Displays a warning dialog.
+  ///
+  /// Parameters:
+  ///   - [errorText]: The text to display in the warning dialog.
   void warning(String errorText) {
     showDialog(
       context: context,

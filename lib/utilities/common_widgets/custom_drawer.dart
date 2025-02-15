@@ -4,7 +4,15 @@ import 'package:academic_planner_for_it/utilities/common_widgets/drawer_item.dar
 import 'package:academic_planner_for_it/features/import_excel/views/import_excel.dart';
 import 'package:flutter/material.dart';
 
+/// A custom drawer widget for the application's main navigation.
+///
+/// This widget provides a side drawer with a header and a list of navigation
+/// items, allowing the user to navigate to different screens within the app.
 class CustomDrawer extends StatelessWidget {
+  /// Creates a [CustomDrawer].
+  ///
+  /// Parameters:
+  ///   - [key]: An optional key to identify this widget.
   const CustomDrawer({super.key});
 
   @override

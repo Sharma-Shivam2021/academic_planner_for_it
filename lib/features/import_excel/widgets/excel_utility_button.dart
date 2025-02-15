@@ -7,6 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../utilities/theme/themes.dart';
 import '../../home_screen/views/home_screen.dart';
 
+/// A widget that displays utility buttons for managing Excel data.
+///
+/// This widget provides buttons to delete all Excel data from the list and to
+/// add the Excel data to the database.
 class ExcelUtilityButtons extends ConsumerStatefulWidget {
   const ExcelUtilityButtons({super.key});
 
@@ -15,20 +19,29 @@ class ExcelUtilityButtons extends ConsumerStatefulWidget {
 }
 
 class _ExcelUtilityButtonsState extends ConsumerState<ExcelUtilityButtons> {
+  /// Clears all Excel data from the list.
   void onDelete() async {
     ref.read(excelListNotifierProvider.notifier).clearList();
   }
 
+  /// Saves the Excel data to the database and navigates to the home screen.
+  ///
+  /// This method reads the current Excel data from the
+  /// [excelListNotifierProvider], saves it to the database using the
+  /// [saveExcelToDatabaseProvider], invalidates the [paginatedEventsProvider]
+  /// to refresh the event list, clears the Excel data list, and then
+  /// navigates to the home screen.
   void onAdd() async {
     final excelData = ref.watch(excelListNotifierProvider);
     ref.read(saveExcelToDatabaseProvider(excelData).future).then((_) {
       ref.invalidate(paginatedEventsProvider);
       ref.read(excelListNotifierProvider.notifier).clearList();
-      pop();
+      _pop();
     });
   }
 
-  void pop() {
+  /// Navigates to the home screen.void _pop() {
+  void _pop() {
     Navigator.pushReplacementNamed(context, HomeScreen.routeName);
   }
 

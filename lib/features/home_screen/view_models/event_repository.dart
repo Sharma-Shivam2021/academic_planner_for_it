@@ -11,19 +11,39 @@ import '../../../utilities/constants/date_formatter.dart';
 import '../../../utilities/services/database.dart';
 import '../models/events.dart';
 
+/// Provides an instance of [EventRepository].
 final eventRepositoryProvider = Provider<EventRepository>((ref) {
   final dbFuture = ref.read(databaseProvider);
   return EventRepository(dbFuture);
 });
 
+/// An instance of [NotificationServices] for managing notifications.
 final NotificationServices notificationServices = NotificationServices();
 
+/// A repository for managing events in the database.
+///
+/// This class provides methods for loading, adding, deleting, and clearing events,
+/// as well as scheduling and managing event notifications.
+
 class EventRepository {
-  final Future<Database> _dbFuture;
+  /// Creates an [EventRepository].
+  ///
+  /// Parameters:
+  ///   - [_dbFuture]: A future that resolves to a [Database] instance.
   EventRepository(this._dbFuture);
 
+  final Future<Database> _dbFuture;
+
+  /// Returns a [Database] instance.
   Future<Database> get _db async => _dbFuture;
 
+  /// Loads a paginated list of events from the database.
+  ///
+  /// Parameters:
+  ///   - [page]: The page number to load.
+  ///   - [pageSize]: The number of events per page.
+  ///
+  /// Returns a [Future] that resolves to a list of [Events].
   Future<List<Events>> loadEventsPaginated(
       {required int page, required int pageSize}) async {
     try {
@@ -47,6 +67,9 @@ class EventRepository {
     }
   }
 
+  /// Gets the total number of events in the database.
+  ///
+  /// Returns a [Future] that resolves to the total event count.
   Future<int> getTotalEventCount() async {
     try {
       final db = await _db;
@@ -57,6 +80,9 @@ class EventRepository {
     }
   }
 
+  /// Loads all events from the database.
+  ///
+  /// Returns a [Future] that resolves to a list of [Events].
   Future<List<Events>> loadEvents() async {
     try {
       final db = await _db;
@@ -73,6 +99,12 @@ class EventRepository {
     }
   }
 
+  /// Adds an event to the database.
+  ///
+  /// If an event with the same name and date/time already exists, it will not be added.
+  ///
+  /// Parameters:
+  ///   - [event]: The [Events] to add.
   Future<void> addEvent(Events event) async {
     try {
       final db = await _db;
@@ -100,6 +132,12 @@ class EventRepository {
     }
   }
 
+  /// Schedules a notification for an event.
+  ///
+  /// If the event's date/time is in the past, no notification will be scheduled.
+  ///
+  /// Parameters:
+  ///   - [event]: The [Events] to schedule a notification for.
   void _scheduleNotification(Events event) async {
     try {
       await notificationServices.removeNotification(event.id);
@@ -118,6 +156,10 @@ class EventRepository {
     }
   }
 
+  /// Updates the notification state of events in the database.
+  ///
+  /// This method checks for events that do not have a corresponding pending notification
+  /// and updates their notification state to `EventNotificationState.notified`.
   Future<void> updateEventNotificationState() async {
     try {
       final db = await _db;
@@ -147,6 +189,10 @@ class EventRepository {
     }
   }
 
+  /// Deletes an event from the database.
+  ///
+  /// Parameters:
+  ///   - [deletingEvent]: The [Events] to delete.
   Future<void> deleteEvent(Events deletingEvent) async {
     try {
       final db = await _db;
@@ -161,6 +207,9 @@ class EventRepository {
     }
   }
 
+  /// Clears all events from the database.
+  ///
+  /// This method also cancels all pending notifications.
   Future<void> clearDatabase() async {
     try {
       final db = await _db;

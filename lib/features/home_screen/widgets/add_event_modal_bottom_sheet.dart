@@ -12,6 +12,10 @@ import '../../../utilities/constants/constants.dart';
 import '../../../utilities/services/speech_manager.dart';
 import '../../../utilities/constants/date_formatter.dart';
 
+/// A widget for adding a new event.
+///
+/// This widget allows the user to input the event name, date, and time,
+/// and then add the event to the application's data.
 class AddNewEvent extends ConsumerStatefulWidget {
   const AddNewEvent({super.key});
 
@@ -26,6 +30,10 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
 
   DateTime? _selectedDateTime = DateTime.now();
 
+  /// Shows a date picker and updates the selected date.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -47,6 +55,10 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
     }
   }
 
+  /// Shows a time picker and updates the selected time.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   void _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -67,10 +79,12 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
     }
   }
 
+  /// Initializes the speech recognition service.
   void _initSpeech() async {
     await ref.read(speechProvider).initialize();
   }
 
+  /// Starts listening for speech input.
   void _startListening() async {
     await ref.read(speechProvider).startListening((result) {
       setState(() {
@@ -80,11 +94,18 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
     setState(() {});
   }
 
+  /// Stops listening for speech input.
   void _stopListening() async {
     await ref.read(speechProvider).stopListening();
     setState(() {});
   }
 
+  /// Adds a new event to the application's data.
+  ///
+  /// This method creates a new [Events] object with the data entered by the
+  /// user, saves it to the database, invalidates the
+  /// [paginatedEventsProvider] to refresh the event list, adds the event to
+  /// the [allEventsProvider], and then navigates back.
   void _addEvent() async {
     Events newEvent = Events(
       eventName: _eventNameController.text,
@@ -104,6 +125,7 @@ class _AddNewEventState extends ConsumerState<AddNewEvent> {
     }
   }
 
+  /// Navigates back to the previous screen.
   void pop() {
     Navigator.pop(context);
   }

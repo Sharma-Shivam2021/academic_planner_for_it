@@ -5,9 +5,11 @@ This Flutter-based application helps IT students efficiently manage their academ
 ## Key Features
 - **Event Management**: Create, update, and delete academic events with ease.
 - **Excel Import**: Bulk import events from Excel files for efficient data entry.
-- **OCR Integration**: Extract event details from images using Google ML Kit’s text recognition.
 - **Reminders**: Local notifications for upcoming deadlines.
 - **Database Storage**: Persist data using an SQLite database.
+- **Share Events**: Share Events from List and Notifications
+- ** Search**: Search by Event Name
+- **Pagination**: Pagination for easy loading
 
 ## Installation
 
@@ -38,9 +40,6 @@ This app uses Riverpod for efficient state management. Both classic and generato
 ## Database
 The app uses SQLite to store events locally. Imported Excel events are stored separately to ensure regular and imported events are easy to manage.
 
-## OCR Integeration
-Powered by the google_mlkit_text_recognition package, the app extracts text from images (e.g., event schedules, lecture notes) to create event reminders.
-
 ## Packages Used
 ### flutter_riverpod:
 State management solution.
@@ -67,11 +66,10 @@ lib\/
 │   │   ├── view_models
 │   │   ├── view
 │   │   └── widgets
-│   └── ocr_screen/
+│   └── settings_screen/
 │       ├── models
 │       ├── view_models
-│       ├── view
-│       └── widgets   
+│       └── view
 ├── utilities/
 │   ├── common_widgets
 │   ├── constants
@@ -81,8 +79,3 @@ lib\/
 └── main.dart 
 ```
 
-## Current Major Issues
-1. App not responsive for different screen sizes
-2. No Quality of Life features like ```progress indicator```, ```error and exception handling```
-3. OCR results with pipe characters (|) may need manual correction.
-4. Add Pagination on all the listing screen

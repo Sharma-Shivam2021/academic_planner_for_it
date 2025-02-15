@@ -7,7 +7,25 @@ import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// A service class for picking and processing Excel files.
+///
+/// This class uses the `file_picker` package to allow the user to select an
+/// Excel file, and the `excel` package to read and process the data within the file.
 class FilePickerServices {
+  /// Picks an Excel file from the device's storage.
+  ///
+  /// This method opens the file picker dialog, allowing the user to select an
+  /// Excel file (`.xls` or `.xlsx`). It then reads the file, processes the data,
+  /// and stores it in the database.
+  ///
+  /// Parameters:
+  ///   - [ref]: The [WidgetRef] object for interacting with Riverpod providers.
+  ///
+  /// Returns:
+  ///   A [Future] that completes with a [String] indicating the result of the operation.
+  ///   - If successful, it returns an empty string or an error message if any.
+  ///   - If no file is selected, it returns "No File Selected".
+  ///   - If an error occurs, it returns a string describing the error.
   Future<String> pickFile(WidgetRef ref) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -30,6 +48,19 @@ class FilePickerServices {
     }
   }
 
+  /// Reads the data from the selected Excel file.
+  ///
+  /// This method reads the Excel file's bytes and decodes them using the `excel`
+  /// package. It then calls [_creatingExcelModelAndStoringInDB] to process the data.
+  ///
+  /// Parameters:
+  ///   - [excelFile]: The [File] object representing the selected Excel file.
+  ///   - [ref]: The [WidgetRef] object for interacting with Riverpod providers.
+  ///
+  /// Returns:
+  ///   A [Future] that completes with a [String] indicating the result of the operation.
+  ///   - If successful, it returns an empty string or an error message if any.
+  ///   - If an error occurs, it returns a string describing the error.
   Future<String> _readExcel(File excelFile, WidgetRef ref) async {
     try {
       final bytes = excelFile.readAsBytesSync();
@@ -44,94 +75,20 @@ class FilePickerServices {
     }
   }
 
-  // Future<(void, String)> _creatingExcelModelAndStoringInDB(
-  //     Excel excel, WidgetRef ref) async {
-  //   try {
-  //     final kConfigTimeForSubtract =
-  //         ref.watch(settingsProvider).configTimeForSubtract;
-  //     List<ExcelData> tempExcelDataList = [];
-  //     for (var table in excel.tables.keys) {
-  //       final sheet = excel.tables[table];
-  //       if (sheet == null) continue;
-  //
-  //       int? noOfRows = sheet.maxRows;
-  //
-  //       for (int rowIndex = 0; rowIndex < noOfRows; rowIndex++) {
-  //         final row = sheet.row(rowIndex);
-  //
-  //         final eventName = row[0]?.value?.toString();
-  //         final startDateTimeString =
-  //             row.length > 1 ? row[1]?.value?.toString() : null;
-  //         final endDateTimeString =
-  //             row.length > 2 ? row[2]?.value?.toString() : null;
-  //
-  //         if (eventName != null && startDateTimeString != null) {
-  //           DateTime? firstDateTime;
-  //           try {
-  //             firstDateTime = DateTime.parse(startDateTimeString);
-  //           } catch (e) {
-  //             debugPrint(
-  //                 'Invalid start date format for event "$eventName": $startDateTimeString');
-  //             continue; // Skip this row if parsing fails
-  //           }
-  //
-  //           if (firstDateTime.weekday == DateTime.sunday) {
-  //             final date = firstDateTime
-  //                 .subtract(kConfigTimeForSubtract)
-  //                 .copyWith(hour: 10);
-  //             tempExcelDataList
-  //                 .add(ExcelData(eventName: eventName, dateTime: date));
-  //           } else {
-  //             var date = firstDateTime
-  //                 .subtract(kConfigTimeForSubtract)
-  //                 .copyWith(hour: 10);
-  //             if (date.weekday == DateTime.sunday) {
-  //               date = date.subtract(kConfigTimeForSubtract);
-  //             }
-  //             tempExcelDataList
-  //                 .add(ExcelData(eventName: eventName, dateTime: date));
-  //           }
-  //
-  //           if (endDateTimeString != null &&
-  //               endDateTimeString != startDateTimeString) {
-  //             DateTime? secondDateTime;
-  //             try {
-  //               secondDateTime = DateTime.parse(endDateTimeString);
-  //             } catch (e) {
-  //               debugPrint(
-  //                   'Invalid end date format for event "$eventName": $endDateTimeString');
-  //               continue; // Skip this row if parsing fails
-  //             }
-  //
-  //             if (secondDateTime.weekday == DateTime.sunday) {
-  //               final date = secondDateTime
-  //                   .subtract(kConfigTimeForSubtract)
-  //                   .copyWith(hour: 10);
-  //               tempExcelDataList
-  //                   .add(ExcelData(eventName: eventName, dateTime: date));
-  //             } else {
-  //               var date = secondDateTime
-  //                   .subtract(kConfigTimeForSubtract)
-  //                   .copyWith(hour: 10);
-  //               if (date.weekday == DateTime.sunday) {
-  //                 date = date.subtract(kConfigTimeForSubtract);
-  //               }
-  //               secondDateTime = secondDateTime.copyWith(hour: 10);
-  //               tempExcelDataList
-  //                   .add(ExcelData(eventName: eventName, dateTime: date));
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //
-  //     for (var excelData in tempExcelDataList) {
-  //       ref.read(excelListNotifierProvider.notifier).addExcelData(excelData);
-  //     }
-  //   } catch (e) {
-  //     throw Exception('$e');
-  //   }
-  // }
+  /// Processes the Excel data and stores it in the database.
+  ///
+  /// This method iterates through the Excel tables, extracts event data,
+  /// adjusts the dates, and stores the data in the database using the
+  /// [excelListNotifierProvider].
+  ///
+  /// Parameters:
+  ///   - [excel]: The [Excel] object containing the decoded Excel data.
+  ///   - [ref]: The [WidgetRef] object for interacting with Riverpod providers.
+  ///
+  /// Returns:
+  ///   A [Future] that completes with a [String] indicating the result of the operation.
+  ///   - If successful, it returns an empty string or an error message if any.
+  ///   - If an error occurs, it returns a string describing the error.
   Future<String> _creatingExcelModelAndStoringInDB(
       Excel excel, WidgetRef ref) async {
     try {
@@ -201,7 +158,17 @@ class FilePickerServices {
     }
   }
 
-  // Helper function to adjust date and handle Sundays
+  /// Helper function to adjust the date and handle Sundays.
+  ///
+  /// This method subtracts a duration from the given [dateTime] and sets the hour to 10.
+  /// If the adjusted date falls on a Sunday, it subtracts the duration again.
+  ///
+  /// Parameters:
+  ///   - [dateTime]: The [DateTime] to adjust.
+  ///   - [subtractDuration]: The [Duration] to subtract from the date.
+  ///
+  /// Returns:
+  ///   The adjusted [DateTime].
   DateTime _adjustDate(DateTime dateTime, Duration subtractDuration) {
     var adjustedDate = dateTime.subtract(subtractDuration).copyWith(hour: 10);
     if (adjustedDate.weekday == DateTime.sunday) {

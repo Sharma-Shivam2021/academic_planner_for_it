@@ -8,7 +8,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../utilities/constants/constants.dart';
 import '../../../utilities/theme/themes.dart';
 
+/// A widget that displays an [Events] object in a card format within a list.
+///
+/// This widget shows the event name, date/time, and notification status of an
+/// [Events] object. It supports selection mode for multiple item actions,
+/// swiping to delete, and tapping to view more details or perform actions.
 class EventListCard extends ConsumerWidget {
+  /// Creates an [EventListCard].
+  ///
+  /// Parameters:
+  ///   - [event]: The [Events] object to display.
+  ///   - [isSelectionMode]: Whether the list is in selection mode.
+  ///   - [isSelected]: Whether this item is currently selected.
+  ///   - [onSelectToggle]: Callback for toggling the selection state.
+  ///   - [onDelete]: Callback for deleting the event.
   const EventListCard({
     required this.isSelected,
     required this.isSelectionMode,
@@ -76,6 +89,11 @@ class EventListCard extends ConsumerWidget {
     );
   }
 
+  /// Builds a dialog box that displays more details about the event and
+  /// provides actions to edit or share the event.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   Future<dynamic> _buildEvenCardTapBox(BuildContext context) {
     return showDialog(
       context: context,
@@ -100,6 +118,10 @@ class EventListCard extends ConsumerWidget {
     );
   }
 
+  /// Builds a container that displays event information and action buttons.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   Container _eventInfoAndActionContainer(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -143,6 +165,13 @@ class EventListCard extends ConsumerWidget {
     );
   }
 
+  /// Builds an elevated button with an icon and label.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
+  ///   - [icon]: The icon to display.
+  ///   - [label]: The label text.
+  ///   - [onPressed]: The callback for when the button is pressed.
   ElevatedButton _elevatedButton(
     BuildContext context,
     IconData icon,
@@ -156,6 +185,12 @@ class EventListCard extends ConsumerWidget {
     );
   }
 
+  /// Builds a row that displays a label and its corresponding data.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
+  ///   - [label]: The label text.
+  ///   - [data]: The data text.
   Row _textWidget(BuildContext context,
       {required String label, required String data}) {
     return Row(

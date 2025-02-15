@@ -6,7 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../utilities/constants/date_formatter.dart';
 import '../model/excel_data.dart';
 
+/// A widget that displays an [ExcelData] object in a card format.
+///
+/// This widget shows the event name and date/time of an [ExcelData] object
+/// and provides buttons to edit or delete the data.
 class ExcelCard extends ConsumerWidget {
+  /// Creates an [ExcelCard].
+  ///
+  /// Parameters:
+  ///   - [data]: The [ExcelData] object to display.
   const ExcelCard({super.key, required this.data});
 
   final ExcelData data;

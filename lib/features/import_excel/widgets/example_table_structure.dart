@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// A widget that displays an example table structure for Excel files.
+///
+/// This widget shows an image of a correctly formatted Excel table and
+/// provides instructions to the user on how to structure their Excel file for
+/// import.
 class ExampleTableStructure extends StatelessWidget {
   const ExampleTableStructure({super.key});
 

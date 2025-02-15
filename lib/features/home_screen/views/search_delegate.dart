@@ -3,9 +3,16 @@ import 'package:flutter/material.dart';
 
 import '../models/events.dart';
 
+/// A search delegate for searching through a list of [Events].
+///
+/// This delegate provides a search bar and displays search results in a list.
 class EventSearchDelegate extends SearchDelegate<Events> {
+  /// The list of all [Events] to search through.
   final List<Events> allEvents;
 
+  /// Creates an [EventSearchDelegate].
+  ///
+  /// Parameters:///   - [allEvents]: The list of all [Events] to search through.
   EventSearchDelegate(this.allEvents);
 
   @override
@@ -43,6 +50,7 @@ class EventSearchDelegate extends SearchDelegate<Events> {
     return _buildSearchResults();
   }
 
+  /// Builds the search results list based on the current query.
   Widget _buildSearchResults() {
     final filteredList = allEvents
         .where((event) =>

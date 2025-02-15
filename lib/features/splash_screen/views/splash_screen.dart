@@ -5,8 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../utilities/services/database.dart';
 
+/// The splash screen widget for the application.
+///
+/// This screen is displayed when the app is first launched. It initializes
+/// essential services such as notifications, text-to-speech (TTS), and the
+/// database, and then navigates to the [HomeScreen].
 class SplashScreen extends ConsumerStatefulWidget {
   static const String routeName = '/splashScreen';
+
+  /// Creates a [SplashScreen].
+  ///
+  /// Parameters:
+  ///- [key]: An optional key to identify this widget.
   const SplashScreen({super.key});
 
   @override
@@ -20,6 +30,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _initializeNotificationsAndTtsAndDBAndSharedPreference();
   }
 
+  /// Initializes the notification, TTS, database, and shared preferences services.
+  ///
+  /// This method initializes the [NotificationServices], [TTSService], and
+  /// the database. After initialization, it navigates to the [HomeScreen].
+  ///
+  /// Throws an exception if any of the initialization steps fail.
   Future<void> _initializeNotificationsAndTtsAndDBAndSharedPreference() async {
     try {
       await NotificationServices().initialize();

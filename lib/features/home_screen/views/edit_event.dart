@@ -12,7 +12,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/events.dart';
 import 'home_screen.dart';
 
+/// A widget for editing an existing event.
+///
+/// This widget allows the user to modify the event name, date, and time.
 class EditEvent extends ConsumerStatefulWidget {
+  /// Creates an [EditEvent] widget.
+  ///
+  /// Parameters:
+  ///   - [event]: The event to edit.
   const EditEvent({required this.event, super.key});
   final Events event;
   @override
@@ -26,6 +33,10 @@ class _EditEventState extends ConsumerState<EditEvent> {
 
   DateTime? _selectedDateTime = DateTime.now();
 
+  /// Shows a date picker and updates the selected date.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -47,6 +58,10 @@ class _EditEventState extends ConsumerState<EditEvent> {
     }
   }
 
+  /// Shows a time picker and updates the selected time.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   void _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -67,10 +82,12 @@ class _EditEventState extends ConsumerState<EditEvent> {
     }
   }
 
+  /// Initializes the speech recognition service.
   void _initSpeech() async {
     await ref.read(speechProvider).initialize();
   }
 
+  /// Starts listening for speech input.
   void _startListening() async {
     await ref.read(speechProvider).startListening((result) {
       setState(() {
@@ -79,11 +96,16 @@ class _EditEventState extends ConsumerState<EditEvent> {
     });
   }
 
+  /// Stops listening for speech input.
   void _stopListening() async {
     await ref.read(speechProvider).stopListening();
     setState(() {});
   }
 
+  /// Edits an existing event.
+  ///
+  /// Parameters:
+  ///   - [prevEvent]: The previous event data.
   void _editEvent(Events prevEvent) async {
     try {
       Events updatedEvent = Events(
@@ -98,10 +120,15 @@ class _EditEventState extends ConsumerState<EditEvent> {
     }
   }
 
+  /// Navigates back to the home screen.
   void _pop() {
     Navigator.popAndPushNamed(context, HomeScreen.routeName);
   }
 
+  /// Removes the previous event from the database and the UI.
+  ///
+  /// Parameters:
+  ///   - [prevEvent]: The previous event data.
   Future<void> _removePrevEvent(Events prevEvent) async {
     try {
       await ref.read(deleteEventProvider(prevEvent).future);
@@ -112,6 +139,10 @@ class _EditEventState extends ConsumerState<EditEvent> {
     }
   }
 
+  /// Adds the edited event to the database and the UI.
+  ///
+  /// Parameters:
+  ///   - [updatedEvent]: The updated event data.
   Future<void> _addEditedEvent(Events updatedEvent) async {
     try {
       await ref.read(createEventProvider(updatedEvent).future);

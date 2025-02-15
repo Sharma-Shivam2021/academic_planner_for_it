@@ -10,7 +10,15 @@ import '../../../utilities/constants/constants.dart';
 import '../../../utilities/constants/date_formatter.dart';
 import '../../../utilities/services/speech_manager.dart';
 
+/// A widget for editing [ExcelData].
+///
+/// This widget allows the user to modify the event name, date, and time of an
+/// existing [ExcelData] object.
 class EditExcelData extends ConsumerStatefulWidget {
+  /// Creates an [EditExcelData] widget.
+  ///
+  /// Parameters:
+  ///   - [excelData]: The [ExcelData] object to edit.
   const EditExcelData({
     super.key,
     required this.excelData,
@@ -30,6 +38,10 @@ class _EditExcelDataState extends ConsumerState<EditExcelData> {
 
   DateTime? _selectedDateTime = DateTime.now();
 
+  /// Shows a date picker and updates the selected date.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -51,6 +63,10 @@ class _EditExcelDataState extends ConsumerState<EditExcelData> {
     }
   }
 
+  /// Shows a time picker and updates the selected time.
+  ///
+  /// Parameters:
+  ///   - [context]: The build context.
   void _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -71,10 +87,12 @@ class _EditExcelDataState extends ConsumerState<EditExcelData> {
     }
   }
 
+  /// Initializes the speech recognition service.
   void _initSpeech() async {
     await ref.read(speechProvider).initialize();
   }
 
+  /// Starts listening for speech input.
   void _startListening() async {
     await ref.read(speechProvider).startListening((result) {
       setState(() {
@@ -84,11 +102,16 @@ class _EditExcelDataState extends ConsumerState<EditExcelData> {
     setState(() {});
   }
 
+  /// Stops listening for speech input.
   void _stopListening() async {
     await ref.read(speechProvider).stopListening();
     setState(() {});
   }
 
+  /// Edits the event with the new data.
+  ///
+  /// Parameters:
+  ///   - [prevData]: The original [ExcelData] object.
   void _editEvent(ExcelData prevData) {
     ExcelData updatedData = ExcelData(
       eventName: _excelDataEventNameController.text,

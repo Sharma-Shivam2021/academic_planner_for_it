@@ -3,7 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../view_model/setting_notifier.dart';
 
+/// The settings screen widget for the application.
+///
+/// This screen allows the user to configure various application settings,
+/// such as the amount of time to subtract from event times for reminders.
 class SettingsScreen extends ConsumerStatefulWidget {
+  /// Creates a [SettingsScreen].
+  ///
+  /// Parameters:
+  ///   - [key]: An optional key to identify this widget.
   const SettingsScreen({super.key});
   static const String routeName = '/settingScreen';
   @override
